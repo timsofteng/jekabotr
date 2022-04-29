@@ -25,7 +25,7 @@ func initDB() {
 
 	query := `SELECT count(*) AS text FROM text_messages`
 
-  err = pgxscan.Select(ctx, db, &bla, query)
+	err = pgxscan.Select(ctx, db, &bla, query)
 
 	fmt.Print(bla)
 	if err != nil {

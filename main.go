@@ -27,7 +27,7 @@ func main() {
 	// defer file.Close()
 
 	// log.SetOutput(file)
-  initDB()
+	initDB()
 
 	token := os.Getenv("TG_TOKEN")
 	botSign := os.Getenv("BOT_SIGN")
