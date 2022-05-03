@@ -2,35 +2,58 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"os"
 
-	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4"
-	"github.com/joho/godotenv"
 )
 
+var db *pgx.Conn
+var ctx context.Context
+
 func initDB() {
-	err := godotenv.Load(".env")
-	db, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	var err error
+	ctx = context.Background()
+
+	db, err = pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
-	}
-	defer db.Close(context.Background())
-
-	ctx := context.Background()
-
-	var bla []map[string]int
-
-	query := `SELECT count(*) AS text FROM text_messages`
-
-	err = pgxscan.Select(ctx, db, &bla, query)
-
-	fmt.Print(bla)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		log.Fatalf("Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 
+	// defer db.Close(context.Background())
+}
+
+func getRandMessage() string {
+	var randMessage string
+
+	queryRandMessage := `SELECT text FROM text_messages ORDER BY RANDOM() LIMIT 1;`
+
+	err := db.QueryRow(ctx, queryRandMessage).Scan(&randMessage)
+
+	log.Print(randMessage)
+
+	if err != nil {
+		log.Printf("QueryRow failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	return randMessage
+}
+
+func getMessagesCount() int {
+	var count int
+
+	queryCount := `SELECT count(*) FROM text_messages`
+
+	err := db.QueryRow(ctx, queryCount).Scan(&count)
+
+	log.Print("messages in db: ", count)
+
+	if err != nil {
+		log.Printf("QueryRow failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	return count
 }

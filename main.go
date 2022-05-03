@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"os"
 	"strings"
-	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
@@ -20,14 +18,8 @@ func init() {
 }
 
 func main() {
-	// file, err := os.OpenFile("log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	// if err != nil {
-	// 	log.Fatalf("error opening file: %v", err)
-	// }
-	// defer file.Close()
-
-	// log.SetOutput(file)
 	initDB()
+	getMessagesCount()
 
 	token := os.Getenv("TG_TOKEN")
 	botSign := os.Getenv("BOT_SIGN")
@@ -41,10 +33,10 @@ func main() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	linesCount := countNumbers()
-	rand.Seed(time.Now().UnixNano())
+	// linesCount := countNumbers()
+	// rand.Seed(time.Now().UnixNano())
 
-	log.Println("in main   ", linesCount)
+	// log.Println("messages in bot:", linesCount)
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -69,10 +61,12 @@ func main() {
 			trigger := isTriggerWords || isAuthorJeka || isReplyToBot
 
 			if trigger {
-				randomMessageNumber := rand.Intn(linesCount)
-				text := ReadExactLine(randomMessageNumber)
+				// randomMessageNumber := rand.Intn(linesCount)
+				// text := ReadExactLine(randomMessageNumber)
 
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, text)
+				randMsg := getRandMessage()
+
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, randMsg)
 				msg.ReplyToMessageID = update.Message.MessageID
 
 				bot.Send(msg)
