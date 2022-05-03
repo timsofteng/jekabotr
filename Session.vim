@@ -21,7 +21,7 @@ badd +10 /usr/lib/go/src/bytes/buffer.go
 badd +15 /usr/lib/go/src/strings/builder.go
 badd +4 ~/projects/go/tg_bot/.env
 badd +151 ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/types.go
-badd +92 ~/projects/go/tg_bot/tg.go
+badd +1 ~/projects/go/tg_bot/tg.go
 badd +431 ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/bot.go
 argglobal
 %argdel
@@ -83,12 +83,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 16 - ((15 * winheight(0) + 25) / 51)
+let s:l = 20 - ((19 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 16
-normal! 013|
+keepjumps 20
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("models.go", ":p")) | buffer models.go | else | edit models.go | endif
@@ -113,7 +113,6 @@ normal! zt
 keepjumps 70
 normal! 031|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 91 + 136) / 273)
 exe 'vert 2resize ' . ((&columns * 90 + 136) / 273)
 exe 'vert 3resize ' . ((&columns * 90 + 136) / 273)

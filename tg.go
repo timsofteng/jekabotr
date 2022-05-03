@@ -77,17 +77,14 @@ func tgMain() {
 
 	for update := range updates {
 		if update.Message != nil { // If we got a message
-			tgAddMessage(update)
-			tgRespond(update)
+			chatId := update.FromChat().ID
+			strCtatId := strconv.Itoa(int(chatId))
+
+			if strCtatId == sourceChatId {
+				dbAddMessage(update.Message.Text)
+			} else {
+				tgRespond(update)
+			}
 		}
-	}
-}
-
-func tgAddMessage(update tgbotapi.Update) {
-	chatId := update.FromChat().ID
-	strCtatId := strconv.Itoa(int(chatId))
-
-	if strCtatId == sourceChatId {
-		dbAddMessage(update.Message.Text)
 	}
 }
