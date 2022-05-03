@@ -11,7 +11,7 @@ import (
 var db *pgx.Conn
 var ctx context.Context
 
-func initDB() {
+func dbInit() {
 	var err error
 	ctx = context.Background()
 
@@ -20,11 +20,10 @@ func initDB() {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
-
 	// defer db.Close(context.Background())
 }
 
-func getRandMessage() string {
+func dbGetRandMessage() string {
 	var randMessage string
 
 	queryRandMessage := `SELECT text FROM text_messages ORDER BY RANDOM() LIMIT 1;`
@@ -41,7 +40,7 @@ func getRandMessage() string {
 	return randMessage
 }
 
-func getMessagesCount() int {
+func dbGetMessagesCount() int {
 	var count int
 
 	queryCount := `SELECT count(*) FROM text_messages`
@@ -56,4 +55,17 @@ func getMessagesCount() int {
 	}
 
 	return count
+}
+
+func dbAddMessage(message string) {
+	query := "INSERT INTO text_messages (text) VALUES ($1)"
+
+	_, err := db.Exec(ctx, query, message)
+
+	if err != nil {
+		log.Printf("Adding failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	log.Print("message added to database: ", message)
 }
