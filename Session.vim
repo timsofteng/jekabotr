@@ -10,20 +10,17 @@ endif
 let s:shortmess_save = &shortmess
 set shortmess=aoO
 badd +20 main.go
-badd +49 models.go
-badd +1 ~/projects/go/tg_bot/tg.go
+badd +46 models.go
+badd +67 ~/projects/go/tg_bot/tg.go
 badd +1 ~/projects/go/tg_bot/.gitignore
 badd +2 jekabot
-badd +9 NeogitStatus
 badd +7 ~/projects/go/tg_bot/Session.vim
+badd +200 ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/helpers.go
 argglobal
 %argdel
-set stal=2
-tabnew +setlocal\ bufhidden=wipe
-tabrewind
-edit models.go
+edit ~/projects/go/tg_bot/tg.go
 argglobal
-balt jekabot
+balt ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/helpers.go
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -40,9 +37,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext
-tabnext 2
-set stal=1
+tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

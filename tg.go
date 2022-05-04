@@ -14,6 +14,8 @@ var sourceChatId string
 var bot *tgbotapi.BotAPI
 var updates tgbotapi.UpdatesChannel
 
+var file = "AgAD1RIAAlJ68Eg"
+
 var err error
 
 func tgInit() {
@@ -77,6 +79,7 @@ func tgRun() {
 
 	for update := range updates {
 		if update.Message != nil { // If we got a message
+			log.Print(update.Message.Voice.FileUniqueID)
 			chatId := update.FromChat().ID
 			strCtatId := strconv.Itoa(int(chatId))
 
