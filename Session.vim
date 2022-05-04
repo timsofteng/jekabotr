@@ -9,32 +9,21 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 let s:shortmess_save = &shortmess
 set shortmess=aoO
-badd +24 main.go
-badd +63 models.go
-badd +19 text.txt
-badd +21 ~/projects/go/tg_bot/counter.go
-badd +208 /usr/lib/go/src/context/context.go
-badd +101 /usr/lib/go/src/os/env.go
-badd +1 ~/projects/inkit-next/inkit/src/models/shared.ts
-badd +134 ~/.config/nvim/lua/plugins.lua
-badd +10 /usr/lib/go/src/bytes/buffer.go
-badd +15 /usr/lib/go/src/strings/builder.go
-badd +4 ~/projects/go/tg_bot/.env
-badd +151 ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/types.go
+badd +20 main.go
+badd +22 models.go
 badd +1 ~/projects/go/tg_bot/tg.go
-badd +431 ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/bot.go
 argglobal
 %argdel
-edit ~/projects/go/tg_bot/tg.go
+set stal=2
+tabnew +setlocal\ bufhidden=wipe
+tabrewind
+edit models.go
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
-wincmd _ | wincmd |
-vsplit
-2wincmd h
-wincmd w
+1wincmd h
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -45,11 +34,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 91 + 136) / 273)
-exe 'vert 2resize ' . ((&columns * 90 + 136) / 273)
-exe 'vert 3resize ' . ((&columns * 90 + 136) / 273)
+exe 'vert 1resize ' . ((&columns * 136 + 136) / 273)
+exe 'vert 2resize ' . ((&columns * 136 + 136) / 273)
 argglobal
-balt models.go
+balt main.go
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -57,37 +45,14 @@ setlocal fdi=#
 setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
-setlocal fen
+setlocal nofen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 87 - ((44 * winheight(0) + 25) / 51)
+let s:l = 22 - ((21 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 87
-normal! 034|
-wincmd w
-argglobal
-if bufexists(fnamemodify("main.go", ":p")) | buffer main.go | else | edit main.go | endif
-if &buftype ==# 'terminal'
-  silent file main.go
-endif
-balt ~/go/pkg/mod/github.com/go-telegram-bot-api/telegram-bot-api/v5@v5.5.1/bot.go
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 20 - ((19 * winheight(0) + 25) / 51)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 20
+keepjumps 22
 normal! 0
 wincmd w
 argglobal
@@ -106,25 +71,24 @@ setlocal fdn=20
 setlocal nofen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 70 - ((40 * winheight(0) + 25) / 51)
+let s:l = 21 - ((20 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 70
-normal! 031|
+keepjumps 21
+normal! 018|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 91 + 136) / 273)
-exe 'vert 2resize ' . ((&columns * 90 + 136) / 273)
-exe 'vert 3resize ' . ((&columns * 90 + 136) / 273)
-tabnext 1
+exe 'vert 1resize ' . ((&columns * 136 + 136) / 273)
+exe 'vert 2resize ' . ((&columns * 136 + 136) / 273)
+tabnext
+tabnext 2
+set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
-let &winminheight = s:save_winminheight
-let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)

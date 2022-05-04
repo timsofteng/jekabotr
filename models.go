@@ -26,7 +26,7 @@ func dbInit() {
 func dbGetRandMessage() string {
 	var randMessage string
 
-	queryRandMessage := `SELECT text FROM text_messages ORDER BY RANDOM() LIMIT 1;`
+	queryRandMessage := `SELECT text FROM messages ORDER BY RANDOM() LIMIT 1;`
 
 	err := db.QueryRow(ctx, queryRandMessage).Scan(&randMessage)
 
@@ -43,7 +43,7 @@ func dbGetRandMessage() string {
 func dbGetMessagesCount() int {
 	var count int
 
-	queryCount := `SELECT count(*) FROM text_messages`
+	queryCount := `SELECT count(*) FROM messages`
 
 	err := db.QueryRow(ctx, queryCount).Scan(&count)
 
@@ -58,7 +58,7 @@ func dbGetMessagesCount() int {
 }
 
 func dbAddMessage(message string) {
-	query := "INSERT INTO text_messages (text) VALUES ($1)"
+	query := "INSERT INTO messages (text) VALUES ($1)"
 
 	_, err := db.Exec(ctx, query, message)
 

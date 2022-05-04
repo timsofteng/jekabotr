@@ -66,7 +66,7 @@ func tgRespond(update tgbotapi.Update) {
 	}
 }
 
-func tgMain() {
+func tgRun() {
 	// linesCount := countNumbers()
 	// rand.Seed(time.Now().UnixNano())
 
