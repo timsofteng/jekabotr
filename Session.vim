@@ -10,34 +10,20 @@ endif
 let s:shortmess_save = &shortmess
 set shortmess=aoO
 badd +20 main.go
-badd +22 models.go
+badd +49 models.go
 badd +1 ~/projects/go/tg_bot/tg.go
+badd +1 ~/projects/go/tg_bot/.gitignore
+badd +2 jekabot
+badd +9 NeogitStatus
+badd +7 ~/projects/go/tg_bot/Session.vim
 argglobal
 %argdel
 set stal=2
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
 edit models.go
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 136 + 136) / 273)
-exe 'vert 2resize ' . ((&columns * 136 + 136) / 273)
 argglobal
-balt main.go
+balt jekabot
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -45,41 +31,15 @@ setlocal fdi=#
 setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
-setlocal nofen
+setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 22 - ((21 * winheight(0) + 25) / 51)
+let s:l = 1 - ((0 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 22
+keepjumps 1
 normal! 0
-wincmd w
-argglobal
-if bufexists(fnamemodify("models.go", ":p")) | buffer models.go | else | edit models.go | endif
-if &buftype ==# 'terminal'
-  silent file models.go
-endif
-balt main.go
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal nofen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 21 - ((20 * winheight(0) + 25) / 51)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 21
-normal! 018|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 136 + 136) / 273)
-exe 'vert 2resize ' . ((&columns * 136 + 136) / 273)
 tabnext
 tabnext 2
 set stal=1
