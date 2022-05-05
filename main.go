@@ -15,6 +15,6 @@ func init() {
 
 func main() {
 	dbInit()
-	dbGetMessagesCount()
+	dbGetTextMessagesCount()
 	tgRun()
 }

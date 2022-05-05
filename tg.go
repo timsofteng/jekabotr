@@ -1,11 +1,14 @@
 package main
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 var token string
@@ -13,8 +16,6 @@ var botSign string
 var sourceChatId string
 var bot *tgbotapi.BotAPI
 var updates tgbotapi.UpdatesChannel
-
-var file = "AgAD1RIAAlJ68Eg"
 
 var err error
 
@@ -55,17 +56,35 @@ func tgRespond(update tgbotapi.Update) {
 	isAuthorJeka := author == "Jekadesigner"
 	trigger := isTriggerWords || isAuthorJeka || isReplyToBot
 
+	//make rundomize for text messages more
+	//get rid of this piece of shit
+	var fns []func(update tgbotapi.Update)
+	fns = append(fns, tgRespondRandText)
+	fns = append(fns, tgRespondRandText)
+	fns = append(fns, tgRespondRandText)
+	fns = append(fns, tgRespondRandText)
+	fns = append(fns, tgRespondRandText)
+	fns = append(fns, tgRespondRandVoice)
+
+	randFunc := fns[rand.Intn(len(fns))]
+
 	if trigger {
-		// randomMessageNumber := rand.Intn(linesCount)
-		// text := ReadExactLine(randomMessageNumber)
-
-		randMsg := dbGetRandMessage()
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, randMsg)
-		msg.ReplyToMessageID = update.Message.MessageID
-
-		bot.Send(msg)
+		randFunc(update)
 	}
+}
+
+func tgRespondRandText(update tgbotapi.Update) {
+	randMsg := dbGetRandTextMessage()
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, randMsg)
+	msg.ReplyToMessageID = update.Message.MessageID
+	bot.Send(msg)
+}
+
+func tgRespondRandVoice(update tgbotapi.Update) {
+	voiceId := dbGetRandVoiceMessage()
+	voice := tgbotapi.NewVoice(update.Message.Chat.ID, tgbotapi.FileID(voiceId))
+	voice.ReplyToMessageID = update.Message.MessageID
+	bot.Send(voice)
 }
 
 func tgRun() {
@@ -76,15 +95,21 @@ func tgRun() {
 
 	tgInit()
 	tgWatchUpdates()
+	rand.Seed(time.Now().UTC().UnixNano())
 
 	for update := range updates {
 		if update.Message != nil { // If we got a message
-			log.Print(update.Message.Voice.FileUniqueID)
+			// log.Print(update.Message.Voice.FileUniqueID)
 			chatId := update.FromChat().ID
-			strCtatId := strconv.Itoa(int(chatId))
+			strChattId := strconv.Itoa(int(chatId))
 
-			if strCtatId == sourceChatId {
-				dbAddMessage(update.Message.Text)
+			if strChattId == sourceChatId {
+				if update.Message.Voice != nil {
+					voiceId := update.Message.Voice.FileID
+					dbAddVoiceId(voiceId)
+				} else {
+					dbAddTextMessage(update.Message.Text)
+				}
 			} else {
 				tgRespond(update)
 			}

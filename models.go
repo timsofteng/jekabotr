@@ -23,10 +23,10 @@ func dbInit() {
 	// defer db.Close(context.Background())
 }
 
-func dbGetRandMessage() string {
+func dbGetRandTextMessage() string {
 	var randMessage string
 
-	query := `SELECT text FROM messages ORDER BY RANDOM() LIMIT 1;`
+	query := `SELECT data FROM text ORDER BY RANDOM() LIMIT 1;`
 
 	err := db.QueryRow(ctx, query).Scan(&randMessage)
 
@@ -40,10 +40,27 @@ func dbGetRandMessage() string {
 	return randMessage
 }
 
-func dbGetMessagesCount() int {
+func dbGetRandVoiceMessage() string {
+	var randVoiceId string
+
+	query := `SELECT id FROM voice ORDER BY RANDOM() LIMIT 1;`
+
+	err := db.QueryRow(ctx, query).Scan(&randVoiceId)
+
+	log.Print(randVoiceId)
+
+	if err != nil {
+		log.Printf("QueryRow failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	return randVoiceId
+}
+
+func dbGetTextMessagesCount() int {
 	var count int
 
-	query := `SELECT count(*) FROM messages`
+	query := `SELECT count(*) FROM text`
 
 	err := db.QueryRow(ctx, query).Scan(&count)
 
@@ -57,8 +74,8 @@ func dbGetMessagesCount() int {
 	return count
 }
 
-func dbAddMessage(message string) {
-	query := "INSERT INTO messages (text) VALUES ($1)"
+func dbAddTextMessage(message string) {
+	query := "INSERT INTO text (data) VALUES ($1)"
 
 	_, err := db.Exec(ctx, query, message)
 
@@ -68,4 +85,17 @@ func dbAddMessage(message string) {
 	}
 
 	log.Print("message added to database: ", message)
+}
+
+func dbAddVoiceId(voiceId string) {
+	query := "INSERT INTO voice (id) VALUES ($1)"
+
+	_, err := db.Exec(ctx, query, voiceId)
+
+	if err != nil {
+		log.Printf("Adding failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	log.Print("voice_id added to database: ", voiceId)
 }
