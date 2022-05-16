@@ -105,6 +105,7 @@ func (t *Delivery) RespondWithTaksa(update tgbotapi.Update) {
 
 	bytes, id, err := t.Usecases.GetRandomTaksa()
 	if err != nil {
+		log.Printf("rand taksa error: %v", err)
 	}
 
 	msg := tgbotapi.NewPhoto(update.Message.Chat.ID, tgbotapi.FileBytes{Name: id, Bytes: bytes})
@@ -116,6 +117,7 @@ func (t *Delivery) RespondWithTaksa(update tgbotapi.Update) {
 func (t *Delivery) RespondWithText(update tgbotapi.Update) {
 	randMsg, err := t.Usecases.GetRandTextMessage()
 	if err != nil {
+		log.Printf("rand text error: %v", err)
 	}
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, randMsg)
@@ -126,6 +128,7 @@ func (t *Delivery) RespondWithText(update tgbotapi.Update) {
 func (t *Delivery) RespondWithVoice(update tgbotapi.Update) {
 	voiceId, err := t.Usecases.GetRandVoiceMessage()
 	if err != nil {
+		log.Printf("rand voice error: %v", err)
 	}
 	voice := tgbotapi.NewVoice(update.Message.Chat.ID, tgbotapi.FileID(voiceId))
 	voice.ReplyToMessageID = update.Message.MessageID

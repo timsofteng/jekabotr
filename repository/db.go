@@ -38,7 +38,7 @@ func (db *myDb) GetRandTextMessage() (randMsg string, err error) {
 
 	if err != nil {
 		log.Printf("QueryRow failed: %v\n", err)
-		os.Exit(1)
+		return
 	}
 
 	return
@@ -52,8 +52,7 @@ func (db *myDb) GetRandVoiceMessage() (randVoiceId string, err error) {
 	log.Print(randVoiceId)
 
 	if err != nil {
-		log.Printf("QueryRow failed: %v\n", err)
-		os.Exit(1)
+		return
 	}
 
 	return
@@ -76,8 +75,6 @@ func (db *myDb) GetVoiceMessagesCount() (count int, err error) {
 	query := `SELECT count(*) FROM voice`
 
 	err = db.conn.QueryRow(ctx, query).Scan(&count)
-
-	log.Print("voices in db: ", count)
 
 	if err != nil {
 		log.Printf("QueryRow failed: %v\n", err)

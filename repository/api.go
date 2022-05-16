@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"jekabot/models"
-	"log"
 	"net/http"
 	"time"
 )
@@ -27,7 +26,7 @@ func httpClient() *http.Client {
 	return client
 }
 
-func doRequest(req *http.Request) ([]byte, error) {
+func doRequest(req *http.Request) (body []byte, err error) {
 	client := httpClient()
 	resp, err := client.Do(req)
 	if err != nil {
@@ -35,63 +34,69 @@ func doRequest(req *http.Request) ([]byte, error) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err = ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		return nil, err
 	}
+
 	if 200 != resp.StatusCode {
 		return nil, fmt.Errorf("%s", body)
 	}
-	return body, nil
+	return
 }
 
-func (c *Client) GetRandomTaksaUrl() (string, string, error) {
+func (c *Client) GetRandomTaksaUrl() (respUrl string, id string, err error) {
 	url := fmt.Sprintf(c.UnsplashBaseUrl + "/photos/random")
 
 	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return
+	}
+
 	q := req.URL.Query()
 	q.Add("client_id", c.UnsplashClientId)
 	q.Add("query", "dachshund")
 
 	req.URL.RawQuery = q.Encode()
 
-	if err != nil {
-		log.Print("request error")
-	}
-
 	bytes, err := doRequest(req)
 	if err != nil {
+		return
 	}
 
 	var data models.RandomSingleImg
 	err = json.Unmarshal(bytes, &data)
+
 	if err != nil {
-		log.Print("json parse error")
+		return
 	}
 
-	respUrl := data.Urls.Full
-	id := data.Id
+	respUrl = data.Urls.Full
+	id = data.Id
 
-	return respUrl, id, err
+	return
 }
 
-func (c *Client) GetBytesFromUrl(url string) ([]byte, error) {
+func (c *Client) GetBytesFromUrl(url string) (bytes []byte, err error) {
 	response, err := http.Get(url)
 
 	if err != nil {
-		log.Print("img request error")
+		return
 	}
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bytes, err = ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Print("error due converting resp to byte")
+		return
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		log.Print("img request not 200")
+		// log.Print("img request not 200")
+		return
 	}
 
-	return bodyBytes, err
+	return
 }
