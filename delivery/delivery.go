@@ -12,8 +12,8 @@ import (
 
 type Delivery struct {
 	Usecases models.Usecases
-	Bot      *tgbotapi.BotAPI
 	Config   models.TelegramConfig
+	Bot      *tgbotapi.BotAPI
 }
 
 const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
@@ -25,15 +25,15 @@ func NewDelivery(c models.TelegramConfig, usecases models.Usecases, bot *tgbotap
 	voiceMsgsStr := strconv.Itoa(int(voiceMsgs))
 
 	if err != nil {
-		log.Println("failed to get total messages")
+		log.Printf("total count messages err: %v", err)
 	}
 
 	log.Printf("total text messages: %s   total voices: %s", textMsgsStr, voiceMsgsStr)
 
 	return &Delivery{
 		Usecases: usecases,
-		Bot:      bot,
 		Config:   c,
+		Bot:      bot,
 	}
 
 }
@@ -61,6 +61,7 @@ func (t *Delivery) respRouter(update tgbotapi.Update) {
 		go t.RespondWithTaksa(update)
 		return
 	}
+
 	isReply := update.Message.ReplyToMessage
 
 	var isReplyToBot bool

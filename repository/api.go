@@ -43,6 +43,7 @@ func doRequest(req *http.Request) (body []byte, err error) {
 	if 200 != resp.StatusCode {
 		return nil, fmt.Errorf("%s", body)
 	}
+
 	return
 }
 

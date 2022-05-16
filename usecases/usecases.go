@@ -72,6 +72,10 @@ func (t *UseCases) GetRandomTaksa() (bytes []byte, id string, err error) {
 	}
 
 	bytes, err = t.apiClient.GetBytesFromUrl(url)
+	if err != nil {
+		return 
+	}
+
 	return
 }
 
