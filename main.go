@@ -43,7 +43,7 @@ func main() {
 
 	for update := range updates {
 		if update.Message != nil { // If we got a message
-			d.Router(update)
+			go d.Router(update)
 		}
 	}
 

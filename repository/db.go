@@ -34,10 +34,7 @@ func (db *myDb) GetRandTextMessage() (randMsg string, err error) {
 
 	err = db.conn.QueryRow(ctx, query).Scan(&randMsg)
 
-	log.Print(randMsg)
-
 	if err != nil {
-		log.Printf("QueryRow failed: %v\n", err)
 		return
 	}
 
@@ -48,8 +45,6 @@ func (db *myDb) GetRandVoiceMessage() (randVoiceId string, err error) {
 	query := `SELECT id FROM voice ORDER BY RANDOM() LIMIT 1;`
 
 	err = db.conn.QueryRow(ctx, query).Scan(&randVoiceId)
-
-	log.Print(randVoiceId)
 
 	if err != nil {
 		return

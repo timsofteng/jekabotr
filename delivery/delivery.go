@@ -58,7 +58,7 @@ func (t *Delivery) respRouter(update tgbotapi.Update) {
 	log.Printf("[%s] %s \n", author, textMsg)
 
 	if strings.Contains(strings.ToLower(textMsg), "jeka_taksa") {
-		go t.RespondWithTaksa(update)
+		t.RespondWithTaksa(update)
 		return
 	}
 
