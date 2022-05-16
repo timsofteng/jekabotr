@@ -20,6 +20,16 @@ const TAKSA_CAPTION = "Собака умная может и самоутили�
 
 func NewDelivery(c models.TelegramConfig, usecases models.Usecases, bot *tgbotapi.BotAPI) *Delivery {
 
+	textMsgs, voiceMsgs, err := usecases.GetMessagesCount()
+	textMsgsStr := strconv.Itoa(int(textMsgs))
+	voiceMsgsStr := strconv.Itoa(int(voiceMsgs))
+
+	if err != nil {
+		log.Println("failed to get total messages")
+	}
+
+	log.Printf("total text messages: %s   total voices: %s", textMsgsStr, voiceMsgsStr)
+
 	return &Delivery{
 		Usecases: usecases,
 		Bot:      bot,

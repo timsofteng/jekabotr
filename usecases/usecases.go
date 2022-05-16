@@ -29,7 +29,7 @@ func (t *UseCases) GetRandVoiceMessage() (voiceId string, err error) {
 
 func (t *UseCases) GetMessagesCount() (text int, voice int, err error) {
 	text, err = t.db.GetTextMessagesCount()
-	voice, err = t.db.GetTextMessagesCount()
+	voice, err = t.db.GetVoiceMessagesCount()
 	return
 
 }
@@ -44,8 +44,8 @@ func (t *UseCases) AddVoiceId(voiceId string) (err error) {
 	return
 }
 
-func (t *UseCases) GetRandomTaksa() ([]byte, string, error) {
+func (t *UseCases) GetRandomTaksa() (bytes []byte, id string, err error) {
 	url, id, err := t.apiClient.GetRandomTaksaUrl()
-	bytes, err := t.apiClient.GetBytesFromUrl(url)
-	return bytes, id, err
+	bytes, err = t.apiClient.GetBytesFromUrl(url)
+	return
 }

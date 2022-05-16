@@ -25,7 +25,7 @@ func NewDB(databaseUrl string) models.DbMethods {
 		os.Exit(1)
 	}
 
-	return &myDb{db}
+	return &myDb{conn: db}
 	// defer db.Close(context.Background())
 }
 
@@ -63,8 +63,6 @@ func (db *myDb) GetTextMessagesCount() (count int, err error) {
 	query := `SELECT count(*) FROM text`
 
 	err = db.conn.QueryRow(ctx, query).Scan(&count)
-
-	log.Print("messages in db: ", count)
 
 	if err != nil {
 		log.Printf("QueryRow failed: %v\n", err)
