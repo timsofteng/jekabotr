@@ -1,0 +1,20 @@
+database:
+  type: postgres
+  user: tim
+  password:
+  net: tcp
+  addr: localhost:5432
+  dbname: tim
+  allowNativePasswords: true
+  params:
+    parseTime: "true"
+
+telegram:
+  token: 5302691216:AAHi_3cSkJKO2KYUDY3TwCfPt1Q-wLrj94I
+  botSign: sadfoiewjfoiwlejf_bot
+  jekaRealid: Jekadesigner
+  souceChatID: -621831810
+
+imgApi: 
+  baseUrl: https://api.unsplash.com
+  clientId: Sqq_xVTdqpJVTi6IQrN2_HmCg_WqZo68iDyoJL0fmXI
