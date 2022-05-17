@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	repo "jekabot/repository"
-	"jekabot/delivery"
-	"jekabot/usecases"
 	"jekabot/config"
+	"jekabot/delivery"
+	repo "jekabot/repository"
+	us "jekabot/usecases"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -13,21 +13,28 @@ import (
 
 func main() {
 	c := config.ReadConfig()
-
 	cDB := c.Database
-
 	cTg := c.Telegram
 
-	apiClient := repo.NewClient(c.ImgApi.BaseUrl, c.ImgApi.ClientId)
-
 	dbConn := fmt.Sprintf("%s://%s@%s/%s", cDB.Type, cDB.User, cDB.Addr, cDB.DBName)
-
 	db := repo.NewDB(dbConn)
+
+	textRepo := repo.NewTextRepository(db)
+	voiceRepo := repo.NewVoiceRepository(db)
+	taksaRepo := repo.NewTaksaRepository(c.ImgApi.BaseUrl, c.ImgApi.ClientId)
+
+	textUs := us.NewTextUsecases(textRepo)
+	voiceUs := us.NewVoiceUsecases(voiceRepo)
+	taksaUs := us.NewTaksaUsecases(taksaRepo)
+	commonUs := us.NewCommonMessagesUsecases(textRepo, voiceRepo)
 
 	bot, err := tgbotapi.NewBotAPI(cTg.Token)
 	if err != nil {
 		log.Panic(err)
 	}
+	deliveryUsecases := delivery.Usecases{TextUs: textUs, VoiceUs: voiceUs, Taksaus: taksaUs, CommonUs: commonUs}
+
+	d := delivery.NewDelivery(cTg, deliveryUsecases, bot)
 
 	// bot.Debug = true
 
@@ -36,10 +43,6 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates := bot.GetUpdatesChan(u)
-
-	us := usecases.NewUsecases(db, apiClient)
-	
-	d := delivery.NewDelivery(cTg, us, bot )
 
 	for update := range updates {
 		if update.Message != nil { // If we got a message

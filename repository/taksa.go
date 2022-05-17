@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"jekabot/models"
+	api "jekabot/apiClient"
 	"net/http"
-	"time"
 )
 
 type Client struct {
@@ -14,38 +14,13 @@ type Client struct {
 	UnsplashClientId string
 }
 
-func NewClient(unsplashBaseUrl, unsplashClientId string) models.ApiMethods {
+func NewTaksaRepository(unsplashBaseUrl, unsplashClientId string) models.ApiMethods {
 	return &Client{
 		UnsplashBaseUrl:  unsplashBaseUrl,
 		UnsplashClientId: unsplashClientId,
 	}
 }
 
-func httpClient() *http.Client {
-	client := &http.Client{Timeout: 10 * time.Second}
-	return client
-}
-
-func doRequest(req *http.Request) (body []byte, err error) {
-	client := httpClient()
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-	body, err = ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if 200 != resp.StatusCode {
-		return nil, fmt.Errorf("%s", body)
-	}
-
-	return
-}
 
 func (c *Client) GetRandomTaksaUrl() (respUrl string, id string, err error) {
 	url := fmt.Sprintf(c.UnsplashBaseUrl + "/photos/random")
@@ -62,12 +37,12 @@ func (c *Client) GetRandomTaksaUrl() (respUrl string, id string, err error) {
 
 	req.URL.RawQuery = q.Encode()
 
-	bytes, err := doRequest(req)
+	bytes, err := api.DoRequest(req)
 	if err != nil {
 		return
 	}
 
-	var data models.RandomSingleImg
+	var data models.Taksa
 	err = json.Unmarshal(bytes, &data)
 
 	if err != nil {

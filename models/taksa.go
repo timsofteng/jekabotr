@@ -1,11 +1,15 @@
 package models
 
-type RandomSingleImg struct {
+type Taksa struct {
 	Urls struct{ Full string }
 	Id   string
 }
 
-type ApiMethods interface {
+type TaksaRepository interface {
 	GetRandomTaksaUrl() (string, string, error)
 	GetBytesFromUrl(url string) ([]byte, error)
+}
+
+type TaksaUsecases interface {
+	GetRandomTaksa() ([]byte, string, error)
 }
