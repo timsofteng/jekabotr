@@ -10,24 +10,26 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type Usecases struct {
-	TextUs models.TextMessageUsecases
-	VoiceUs models.VoiceMessageUsecases
+type myDelivery struct {
+	TextUs   models.TextMessageUsecases
+	VoiceUs  models.VoiceMessageUsecases
 	CommonUs models.CommonMessagesUsecases
-	Taksaus models.TaksaUsecases
-}
-
-type Delivery struct {
-	US Usecases
+	TaksaUs  models.TaksaUsecases
 	Config   models.TelegramConfig
 	Bot      *tgbotapi.BotAPI
 }
 
 const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
 
-func NewDelivery(c models.TelegramConfig, us Usecases, bot *tgbotapi.BotAPI) *Delivery {
+func NewDelivery(
+	textUs models.TextMessageUsecases,
+	voiceUs models.VoiceMessageUsecases,
+	commonUs models.CommonMessagesUsecases,
+	taksaUs models.TaksaUsecases,
+	c models.TelegramConfig,
+	bot *tgbotapi.BotAPI) *myDelivery {
 
-	textMsgs, voiceMsgs, err := us.CommonUs.GetMessagesCount()
+	textMsgs, voiceMsgs, err := commonUs.GetMessagesCount()
 	textMsgsStr := strconv.Itoa(int(textMsgs))
 	voiceMsgsStr := strconv.Itoa(int(voiceMsgs))
 
@@ -37,15 +39,18 @@ func NewDelivery(c models.TelegramConfig, us Usecases, bot *tgbotapi.BotAPI) *De
 
 	log.Printf("total text messages: %s   total voices: %s", textMsgsStr, voiceMsgsStr)
 
-	return &Delivery{
-		US: us,
+	return &myDelivery{
+		TextUs:   textUs,
+		VoiceUs:  voiceUs,
+		CommonUs: commonUs,
+		TaksaUs:  taksaUs,
 		Config:   c,
 		Bot:      bot,
 	}
 
 }
 
-func (d *Delivery) Router(update tgbotapi.Update) {
+func (d *myDelivery) Router(update tgbotapi.Update) {
 	chatId := update.FromChat().ID
 	strChattId := strconv.Itoa(int(chatId))
 
@@ -57,7 +62,7 @@ func (d *Delivery) Router(update tgbotapi.Update) {
 
 }
 
-func (t *Delivery) respRouter(update tgbotapi.Update) {
+func (t *myDelivery) respRouter(update tgbotapi.Update) {
 
 	textMsg := update.Message.Text
 	author := update.Message.From.UserName
@@ -100,18 +105,18 @@ func (t *Delivery) respRouter(update tgbotapi.Update) {
 	}
 }
 
-func (t *Delivery) storeRouter(update tgbotapi.Update) {
+func (d *myDelivery) storeRouter(update tgbotapi.Update) {
 	if update.Message.Voice != nil {
 		voiceId := update.Message.Voice.FileID
-		t.US.VoiceUs.AddVoiceId(voiceId)
+		d.VoiceUs.AddVoiceId(voiceId)
 	} else {
-		t.US.TextUs.AddTextMessage(update.Message.Text)
+		d.TextUs.AddTextMessage(update.Message.Text)
 	}
 }
 
-func (d *Delivery) RespondWithTaksa(update tgbotapi.Update) {
+func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
 
-	bytes, id, err := d.US.Taksaus.GetRandomTaksa()
+	bytes, id, err := d.TaksaUs.GetRandomTaksa()
 	if err != nil {
 		log.Printf("rand taksa error: %v", err)
 	}
@@ -122,8 +127,8 @@ func (d *Delivery) RespondWithTaksa(update tgbotapi.Update) {
 	d.Bot.Send(msg)
 }
 
-func (d *Delivery) RespondWithText(update tgbotapi.Update) {
-	randMsg, err := d.US.TextUs.GetRandTextMessage()
+func (d *myDelivery) RespondWithText(update tgbotapi.Update) {
+	randMsg, err := d.TextUs.GetRandTextMessage()
 	if err != nil {
 		log.Printf("rand text error: %v", err)
 	}
@@ -133,8 +138,8 @@ func (d *Delivery) RespondWithText(update tgbotapi.Update) {
 	d.Bot.Send(msg)
 }
 
-func (d *Delivery) RespondWithVoice(update tgbotapi.Update) {
-	voiceId, err := d.US.VoiceUs.GetRandVoiceMessage()
+func (d *myDelivery) RespondWithVoice(update tgbotapi.Update) {
+	voiceId, err := d.VoiceUs.GetRandVoiceMessage()
 	if err != nil {
 		log.Printf("rand voice error: %v", err)
 	}

@@ -32,9 +32,15 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	deliveryUsecases := delivery.Usecases{TextUs: textUs, VoiceUs: voiceUs, Taksaus: taksaUs, CommonUs: commonUs}
 
-	d := delivery.NewDelivery(cTg, deliveryUsecases, bot)
+	d := delivery.NewDelivery(
+		textUs,
+		voiceUs,
+		commonUs,
+		taksaUs,
+		cTg,
+		bot,
+	)
 
 	// bot.Debug = true
 

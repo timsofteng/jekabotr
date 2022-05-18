@@ -9,20 +9,20 @@ import (
 	"net/http"
 )
 
-type Client struct {
+type myTaksaRepo struct {
 	UnsplashBaseUrl  string
 	UnsplashClientId string
 }
 
 func NewTaksaRepository(unsplashBaseUrl, unsplashClientId string) models.ApiMethods {
-	return &Client{
+	return &myTaksaRepo{
 		UnsplashBaseUrl:  unsplashBaseUrl,
 		UnsplashClientId: unsplashClientId,
 	}
 }
 
 
-func (c *Client) GetRandomTaksaUrl() (respUrl string, id string, err error) {
+func (c *myTaksaRepo) GetRandomTaksaUrl() (respUrl string, id string, err error) {
 	url := fmt.Sprintf(c.UnsplashBaseUrl + "/photos/random")
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -55,7 +55,7 @@ func (c *Client) GetRandomTaksaUrl() (respUrl string, id string, err error) {
 	return
 }
 
-func (c *Client) GetBytesFromUrl(url string) (bytes []byte, err error) {
+func (c *myTaksaRepo) GetBytesFromUrl(url string) (bytes []byte, err error) {
 	response, err := http.Get(url)
 
 	if err != nil {
