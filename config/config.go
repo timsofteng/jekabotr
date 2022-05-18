@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"log"
-	"os"
 	"jekabot/models"
 
 	"github.com/spf13/viper"
@@ -26,7 +25,7 @@ func ReadConfig() *models.Config {
 
 	if err := viper.Unmarshal(config); err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalln(err)
 	}
 
 	return config

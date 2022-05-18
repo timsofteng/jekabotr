@@ -16,7 +16,14 @@ func main() {
 	cDB := c.Database
 	cTg := c.Telegram
 
-	dbConn := fmt.Sprintf("%s://%s@%s/%s", cDB.Type, cDB.User, cDB.Addr, cDB.DBName)
+	dbConn := fmt.Sprintf("%s://%s:%s@%s/%s", 
+		cDB.Type, 
+		cDB.User, 
+		cDB.Password, 
+		cDB.Addr, 
+		cDB.DBName)
+
+	log.Println(dbConn)
 	db := repo.NewDB(dbConn)
 
 	textRepo := repo.NewTextRepository(db)

@@ -14,7 +14,7 @@ type myTaksaRepo struct {
 	UnsplashClientId string
 }
 
-func NewTaksaRepository(unsplashBaseUrl, unsplashClientId string) models.ApiMethods {
+func NewTaksaRepository(unsplashBaseUrl, unsplashClientId string) models.TaksaRepository {
 	return &myTaksaRepo{
 		UnsplashBaseUrl:  unsplashBaseUrl,
 		UnsplashClientId: unsplashClientId,
