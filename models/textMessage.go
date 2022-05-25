@@ -16,4 +16,5 @@ type TextMessageRepository interface {
 type TextMessageUsecases interface {
 	GetRandTextMessage() (string, error)
 	AddTextMessage(message string) error
+	GetTextMessagesCount() (int, error)
 }

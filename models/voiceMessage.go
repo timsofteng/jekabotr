@@ -14,5 +14,6 @@ type VoiceMessageRepository interface {
 
 type VoiceMessageUsecases interface {
 	GetRandVoiceMessage() (string, error)
+	GetVoiceMessagesCount() (int, error)
 	AddVoiceId(voiceId string) error
 }

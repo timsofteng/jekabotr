@@ -25,8 +25,13 @@ type ImgApiConfig struct {
 	ClientId string
 }
 
+type YoutubeApiConfig struct {
+	Key string
+}
+
 type Config struct {
 	Database DatabaseConfig
 	Telegram TelegramConfig
 	ImgApi ImgApiConfig
+	YoutubeApi YoutubeApiConfig
 }

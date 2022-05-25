@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"jekabot/models"
-	api "jekabot/apiClient"
+	"jekabot/apiClient"
 	"net/http"
 )
 
@@ -36,6 +36,8 @@ func (c *myTaksaRepo) GetRandomTaksaUrl() (respUrl string, id string, err error)
 	q.Add("query", "dachshund")
 
 	req.URL.RawQuery = q.Encode()
+
+	api := apiClient.NewHttpClient()
 
 	bytes, err := api.DoRequest(req)
 	if err != nil {

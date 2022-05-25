@@ -13,23 +13,25 @@ import (
 type myDelivery struct {
 	TextUs   models.TextMessageUsecases
 	VoiceUs  models.VoiceMessageUsecases
-	CommonUs models.CommonMessagesUsecases
 	TaksaUs  models.TaksaUsecases
+	YtUs     models.YoutubeUsecases
 	Config   models.TelegramConfig
 	Bot      *tgbotapi.BotAPI
 }
 
 const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
+const YT_LINK_CAPTION = "Взгляните на это видео:\n\n"
 
 func NewDelivery(
 	textUs models.TextMessageUsecases,
 	voiceUs models.VoiceMessageUsecases,
-	commonUs models.CommonMessagesUsecases,
 	taksaUs models.TaksaUsecases,
+	ytUs models.YoutubeUsecases,
 	c models.TelegramConfig,
 	bot *tgbotapi.BotAPI) *myDelivery {
 
-	textMsgs, voiceMsgs, err := commonUs.GetMessagesCount()
+	textMsgs, err := textUs.GetTextMessagesCount()
+	voiceMsgs, err := voiceUs.GetVoiceMessagesCount()
 	textMsgsStr := strconv.Itoa(int(textMsgs))
 	voiceMsgsStr := strconv.Itoa(int(voiceMsgs))
 
@@ -42,8 +44,8 @@ func NewDelivery(
 	return &myDelivery{
 		TextUs:   textUs,
 		VoiceUs:  voiceUs,
-		CommonUs: commonUs,
 		TaksaUs:  taksaUs,
+		YtUs:     ytUs,
 		Config:   c,
 		Bot:      bot,
 	}
@@ -71,6 +73,11 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 
 	if strings.Contains(strings.ToLower(textMsg), "jeka_taksa") {
 		t.RespondWithTaksa(update)
+		return
+	}
+
+	if strings.Contains(strings.ToLower(textMsg), "jeka_video") {
+		t.RespondWithYtUrl(update)
 		return
 	}
 
@@ -124,6 +131,19 @@ func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
 	msg := tgbotapi.NewPhoto(update.Message.Chat.ID, tgbotapi.FileBytes{Name: id, Bytes: bytes})
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.Caption = TAKSA_CAPTION
+	d.Bot.Send(msg)
+}
+
+func (d *myDelivery) RespondWithYtUrl(update tgbotapi.Update) {
+	ytUrl, err := d.YtUs.GetRandomVideoUrl()
+	if err != nil {
+		log.Printf("yt url error: %v", err)
+	}
+
+	msgText := YT_LINK_CAPTION + ytUrl
+
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgText)
+	msg.ReplyToMessageID = update.Message.MessageID
 	d.Bot.Send(msg)
 }
 

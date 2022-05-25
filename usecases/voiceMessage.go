@@ -32,3 +32,11 @@ func (t *myVoiceMessageUsecases) AddVoiceId(voiceId string) (err error) {
 
 	return
 }
+
+func (u *myVoiceMessageUsecases) GetVoiceMessagesCount() (text int, err error) {
+	text, err = u.DB.GetVoiceMessagesCount()
+	if err != nil {
+		return
+	}
+	return
+}

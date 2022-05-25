@@ -32,3 +32,11 @@ func (u *myTextUsecases) AddTextMessage(message string) (err error) {
 
 	return
 }
+
+func (u *myTextUsecases) GetTextMessagesCount() (text int, err error) {
+	text, err = u.DB.GetTextMessagesCount()
+	if err != nil {
+		return
+	}
+	return
+}

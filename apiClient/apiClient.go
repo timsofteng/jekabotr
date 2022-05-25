@@ -7,14 +7,18 @@ import (
 	"time"
 )
 
-func httpClient() *http.Client {
-	client := &http.Client{Timeout: 10 * time.Second}
-	return client
+type myHttpClient struct {
+	ApiClient *http.Client
 }
 
-func DoRequest(req *http.Request) (body []byte, err error) {
-	client := httpClient()
-	resp, err := client.Do(req)
+func NewHttpClient() *myHttpClient {
+	client := &http.Client{Timeout: 10 * time.Second}
+	return &myHttpClient{ApiClient: client}
+}
+
+
+func (a *myHttpClient) DoRequest(req *http.Request) (body []byte, err error) {
+	resp, err := a.ApiClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
