@@ -4,16 +4,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v4"
 	"jekabot/models"
+
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 
 type myVoiceRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 }
 
-func NewVoiceRepository(db *pgx.Conn) models.VoiceMessageRepository {
+func NewVoiceRepository(db *pgxpool.Pool) models.VoiceMessageRepository {
 	return &myVoiceRepo{conn: db}
 	// defer db.Close(context.Background())
 }

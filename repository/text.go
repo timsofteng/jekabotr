@@ -4,16 +4,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v4"
 	"jekabot/models"
+
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 
 type myTextRepo struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 }
 
-func NewTextRepository(db *pgx.Conn) models.TextMessageRepository {
+func NewTextRepository(db *pgxpool.Pool) models.TextMessageRepository {
 	return &myTextRepo{conn: db}
 	// defer db.Close(context.Background())
 }
