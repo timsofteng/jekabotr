@@ -92,7 +92,8 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 
 	isTriggerWords := strings.Contains(strings.ToLower(textMsg), "jeka")
 	isAuthorJeka := author == t.Config.JekaRealid
-	trigger := isTriggerWords || isAuthorJeka || isReplyToBot
+	isAuthorPavelych := author == t.Config.PavelychRealId
+	trigger := isTriggerWords || isAuthorJeka || isAuthorPavelych || isReplyToBot
 
 	//make rundomize for text messages more
 	//get rid of this piece of shit

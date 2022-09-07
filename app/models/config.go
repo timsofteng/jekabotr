@@ -4,6 +4,7 @@ type TelegramConfig struct {
 	Token       string
 	BotSign     string
 	JekaRealid  string
+	PavelychRealId  string
 	SouceChatID string
 }
 
