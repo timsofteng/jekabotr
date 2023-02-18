@@ -1,8 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"jekabot/delivery"
+	"jekabot/features/taksa"
+	"jekabot/features/text"
+	"jekabot/features/ytVideo"
+	lib "jekabot/lib"
 	repo "jekabot/repository"
 	us "jekabot/usecases"
 	"log"
@@ -12,50 +15,37 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	c := ReadConfig()
 	cDB := c.Database
 	cTg := c.Telegram
 	cYt := c.YoutubeApi
+	cImgApi := c.ImgApi
 
-	dbConn := fmt.Sprintf("%s://%s:%s@%s/%s",
-		cDB.Type,
-		cDB.User,
-		cDB.Password,
-		cDB.Addr,
-		cDB.DBName)
+	db := lib.GetDatabaseInstance(cDB)
+	bot := lib.GetTgBotInstance(cTg.Token)
 
-	log.Println(dbConn)
-
-	db := repo.NewDB(dbConn)
+	textDelivery := text.GetTextDelivery(db, bot)
+	taksaDelivery := taksa.GetTaksaDelivery(cImgApi.BaseUrl, cImgApi.ClientId, bot)
+	ytDelivery := ytVideo.GetTaksaDelivery(cYt.Key, bot)
 
 	textRepo := repo.NewTextRepository(db)
 	voiceRepo := repo.NewVoiceRepository(db)
-	taksaRepo := repo.NewTaksaRepository(c.ImgApi.BaseUrl, c.ImgApi.ClientId)
-	ytRepo := repo.NewYoutubeRepository(cYt.Key)
 
 	textUs := us.NewTextUsecases(textRepo)
 	voiceUs := us.NewVoiceUsecases(voiceRepo)
-	taksaUs := us.NewTaksaUsecases(taksaRepo)
-	ytUs := us.NewYoutubeUsecases(ytRepo)
 
-	bot, err := tgbotapi.NewBotAPI(cTg.Token)
-	if err != nil {
-		log.Panic(err)
+	routerArgs := delivery.MyDelivery{
+		TextDelivery:  textDelivery,
+		VoiceUs:       voiceUs,
+		YtDelivery:    ytDelivery,
+		TaksaDelivery: taksaDelivery,
+		Bot:           bot,
+		TgConfig:      cTg,
 	}
 
-	d := delivery.NewDelivery(
-		textUs,
-		voiceUs,
-		taksaUs,
-		ytUs,
-		cTg,
-		bot,
-	)
-
-	// bot.Debug = true
+	d := delivery.NewDelivery(routerArgs)
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 

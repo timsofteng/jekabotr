@@ -1,6 +1,9 @@
 package delivery
 
 import (
+	taksa "jekabot/features/taksa"
+	text "jekabot/features/text"
+	ytVideo "jekabot/features/ytVideo"
 	"jekabot/models"
 	"log"
 	"math/rand"
@@ -10,28 +13,24 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type myDelivery struct {
-	TextUs   models.TextMessageUsecases
-	VoiceUs  models.VoiceMessageUsecases
-	TaksaUs  models.TaksaUsecases
-	YtUs     models.YoutubeUsecases
-	Config   models.TelegramConfig
-	Bot      *tgbotapi.BotAPI
+type MyDelivery struct {
+	TextDelivery  *text.TextDelivery
+	VoiceUs       models.VoiceMessageUsecases
+	TaksaDelivery *taksa.TaksaDelivery
+	YtDelivery    *ytVideo.YoutubeDelivery
+	TgConfig      models.TelegramConfig
+	Bot           *tgbotapi.BotAPI
 }
 
 const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
 const YT_LINK_CAPTION = "Взгляните на это видео:\n\n"
 
 func NewDelivery(
-	textUs models.TextMessageUsecases,
-	voiceUs models.VoiceMessageUsecases,
-	taksaUs models.TaksaUsecases,
-	ytUs models.YoutubeUsecases,
-	c models.TelegramConfig,
-	bot *tgbotapi.BotAPI) *myDelivery {
+	args MyDelivery) *MyDelivery {
 
-	textMsgs, err := textUs.GetTextMessagesCount()
-	voiceMsgs, err := voiceUs.GetVoiceMessagesCount()
+	textMsgs, err := args.TextDelivery.GetTextMessagesCount()
+	voiceMsgs, err := args.VoiceUs.GetVoiceMessagesCount()
+
 	textMsgsStr := strconv.Itoa(int(textMsgs))
 	voiceMsgsStr := strconv.Itoa(int(voiceMsgs))
 
@@ -41,22 +40,22 @@ func NewDelivery(
 
 	log.Printf("total text messages: %s   total voices: %s", textMsgsStr, voiceMsgsStr)
 
-	return &myDelivery{
-		TextUs:   textUs,
-		VoiceUs:  voiceUs,
-		TaksaUs:  taksaUs,
-		YtUs:     ytUs,
-		Config:   c,
-		Bot:      bot,
+	return &MyDelivery{
+		TextUs:        args.TextUs,
+		VoiceUs:       args.VoiceUs,
+		TaksaDelivery: args.TaksaDelivery,
+		YtDelivery:    args.YtDelivery,
+		TgConfig:      args.TgConfig,
+		Bot:           args.Bot,
 	}
 
 }
 
-func (d *myDelivery) Router(update tgbotapi.Update) {
+func (d *MyDelivery) Router(update tgbotapi.Update) {
 	chatId := update.FromChat().ID
 	strChattId := strconv.Itoa(int(chatId))
 
-	if strChattId != d.Config.SouceChatID {
+	if strChattId != d.TgConfig.SouceChatID {
 		d.respRouter(update)
 	} else {
 		d.storeRouter(update)
@@ -64,7 +63,7 @@ func (d *myDelivery) Router(update tgbotapi.Update) {
 
 }
 
-func (t *myDelivery) respRouter(update tgbotapi.Update) {
+func (t *MyDelivery) respRouter(update tgbotapi.Update) {
 
 	textMsg := update.Message.Text
 	author := update.Message.From.UserName
@@ -72,12 +71,12 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 	log.Printf("[%s] %s \n", author, textMsg)
 
 	if strings.Contains(strings.ToLower(textMsg), "jeka_taksa") {
-		t.RespondWithTaksa(update)
+		t.TaksaDelivery.RespondWithTaksa(update)
 		return
 	}
 
 	if strings.Contains(strings.ToLower(textMsg), "jeka_video") {
-		t.RespondWithYtUrl(update)
+		t.YtDelivery.RespondWithYtUrl(update)
 		return
 	}
 
@@ -87,12 +86,12 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 
 	if isReply != nil {
 		replyTo := update.Message.ReplyToMessage.From.UserName
-		isReplyToBot = replyTo == t.Config.BotSign
+		isReplyToBot = replyTo == t.TgConfig.BotSign
 	}
 
 	isTriggerWords := strings.Contains(strings.ToLower(textMsg), "jeka")
-	isAuthorJeka := author == t.Config.JekaRealid
-	isAuthorPavelych := author == t.Config.PavelychRealId
+	isAuthorJeka := author == t.TgConfig.JekaRealid
+	isAuthorPavelych := author == t.TgConfig.PavelychRealId
 	trigger := isTriggerWords || isAuthorJeka || isAuthorPavelych || isReplyToBot
 
 	//make rundomize for text messages more
@@ -113,7 +112,7 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 	}
 }
 
-func (d *myDelivery) storeRouter(update tgbotapi.Update) {
+func (d *MyDelivery) storeRouter(update tgbotapi.Update) {
 	if update.Message.Voice != nil {
 		voiceId := update.Message.Voice.FileID
 		d.VoiceUs.AddVoiceId(voiceId)
@@ -122,33 +121,7 @@ func (d *myDelivery) storeRouter(update tgbotapi.Update) {
 	}
 }
 
-func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
-
-	bytes, id, err := d.TaksaUs.GetRandomTaksa()
-	if err != nil {
-		log.Printf("rand taksa error: %v", err)
-	}
-
-	msg := tgbotapi.NewPhoto(update.Message.Chat.ID, tgbotapi.FileBytes{Name: id, Bytes: bytes})
-	msg.ReplyToMessageID = update.Message.MessageID
-	msg.Caption = TAKSA_CAPTION
-	d.Bot.Send(msg)
-}
-
-func (d *myDelivery) RespondWithYtUrl(update tgbotapi.Update) {
-	ytUrl, err := d.YtUs.GetRandomVideoUrl()
-	if err != nil {
-		log.Printf("yt url error: %v", err)
-	}
-
-	msgText := YT_LINK_CAPTION + ytUrl
-
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgText)
-	msg.ReplyToMessageID = update.Message.MessageID
-	d.Bot.Send(msg)
-}
-
-func (d *myDelivery) RespondWithText(update tgbotapi.Update) {
+func (d *MyDelivery) RespondWithText(update tgbotapi.Update) {
 	randMsg, err := d.TextUs.GetRandTextMessage()
 	if err != nil {
 		log.Printf("rand text error: %v", err)
@@ -159,7 +132,7 @@ func (d *myDelivery) RespondWithText(update tgbotapi.Update) {
 	d.Bot.Send(msg)
 }
 
-func (d *myDelivery) RespondWithVoice(update tgbotapi.Update) {
+func (d *MyDelivery) RespondWithVoice(update tgbotapi.Update) {
 	voiceId, err := d.VoiceUs.GetRandVoiceMessage()
 	if err != nil {
 		log.Printf("rand voice error: %v", err)
