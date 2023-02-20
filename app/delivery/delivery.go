@@ -41,7 +41,7 @@ func NewDelivery(
 	log.Printf("total text messages: %s   total voices: %s", textMsgsStr, voiceMsgsStr)
 
 	return &MyDelivery{
-		TextUs:        args.TextUs,
+		TextDelivery:  args.TextDelivery,
 		VoiceUs:       args.VoiceUs,
 		TaksaDelivery: args.TaksaDelivery,
 		YtDelivery:    args.YtDelivery,
@@ -97,12 +97,12 @@ func (t *MyDelivery) respRouter(update tgbotapi.Update) {
 	//make rundomize for text messages more
 	//get rid of this piece of shit
 	var fns []func(update tgbotapi.Update)
-	fns = append(fns, t.RespondWithText)
-	fns = append(fns, t.RespondWithText)
-	fns = append(fns, t.RespondWithText)
-	fns = append(fns, t.RespondWithText)
-	fns = append(fns, t.RespondWithText)
-	fns = append(fns, t.RespondWithText)
+	fns = append(fns, t.TextDelivery.RespondWithText)
+	fns = append(fns, t.TextDelivery.RespondWithText)
+	fns = append(fns, t.TextDelivery.RespondWithText)
+	fns = append(fns, t.TextDelivery.RespondWithText)
+	fns = append(fns, t.TextDelivery.RespondWithText)
+	fns = append(fns, t.TextDelivery.RespondWithText)
 	fns = append(fns, t.RespondWithVoice)
 
 	randFunc := fns[rand.Intn(len(fns))]
@@ -119,17 +119,6 @@ func (d *MyDelivery) storeRouter(update tgbotapi.Update) {
 	} else {
 		d.TextUs.AddTextMessage(update.Message.Text)
 	}
-}
-
-func (d *MyDelivery) RespondWithText(update tgbotapi.Update) {
-	randMsg, err := d.TextUs.GetRandTextMessage()
-	if err != nil {
-		log.Printf("rand text error: %v", err)
-	}
-
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, randMsg)
-	msg.ReplyToMessageID = update.Message.MessageID
-	d.Bot.Send(msg)
 }
 
 func (d *MyDelivery) RespondWithVoice(update tgbotapi.Update) {

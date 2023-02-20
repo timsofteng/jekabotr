@@ -18,7 +18,7 @@ func initDelivery(
 }
 
 func (d *TextDelivery) RespondWithText(update tgbotapi.Update) {
-	randMsg, err := TextUsGetRandTextMessage()
+	randMsg, err := d.TextUs.GetRandTextMessage()
 	if err != nil {
 		log.Printf("rand text error: %v", err)
 	}
