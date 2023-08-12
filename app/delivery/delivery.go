@@ -80,18 +80,11 @@ func (t *MyDelivery) respRouter(update tgbotapi.Update) {
 		return
 	}
 
-	isReply := update.Message.ReplyToMessage
-
-	var isReplyToBot bool
-
-	if isReply != nil {
-		replyTo := update.Message.ReplyToMessage.From.UserName
-		isReplyToBot = replyTo == t.TgConfig.BotSign
-	}
-
+	isReplyToBot := IsReplyToBot(update.Message, t.TgConfig.BotSign)
 	isTriggerWords := strings.Contains(strings.ToLower(textMsg), "jeka")
 	isAuthorJeka := author == t.TgConfig.JekaRealid
 	isAuthorPavelych := author == t.TgConfig.PavelychRealId
+	
 	trigger := isTriggerWords || isAuthorJeka || isAuthorPavelych || isReplyToBot
 
 	//make rundomize for text messages more
