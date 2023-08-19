@@ -1,18 +1,22 @@
 database:
   type: postgres
-  user: tim
-  password: 1111
+  user: postgres
+  password: postgres
   net: tcp
-  # addr: 127.0.0.1:5432
-  addr: 45.148.31.214:5432
-  dbname: jekabot_dev
+  addr: db:5432
+  # addr: host.docker.internal:5432
+  # addr: 45.148.31.214:5432
+  # dbname: jekabot_dev
+  dbname: postgres
   allowNativePasswords: true
   params:
     parseTime: "true"
 
 telegram:
-  token: 5302691216:AAHi_3cSkJKO2KYUDY3TwCfPt1Q-wLrj94I
-  botSign: sadfoiewjfoiwlejf_bot
+  # token: 5302691216:AAHi_3cSkJKO2KYUDY3TwCfPt1Q-wLrj94I
+  token: 5181534861:AAExYEVuJj1sc6PRooZMwOmqB7XT-hp9NJ8
+  # botSign: sadfoiewjfoiwlejf_bot
+  botSign: ggyhhhh_bot 
   jekaRealid: Jekadesigner
   pavelychRealId: dabdabdabdayada
   # souceChatID: -621831810

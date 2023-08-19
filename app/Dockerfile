@@ -1,7 +1,7 @@
 FROM golang:1.21.0-alpine
-ENV APP_HOME /app
+WORKDIR ./app 
 
-WORKDIR "$APP_HOME"
 COPY . .
+RUN go build
 
 CMD ["./jekabot"]
