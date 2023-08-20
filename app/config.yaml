@@ -13,10 +13,10 @@ database:
     parseTime: "true"
 
 telegram:
-  # token: 5302691216:AAHi_3cSkJKO2KYUDY3TwCfPt1Q-wLrj94I
-  token: 5181534861:AAExYEVuJj1sc6PRooZMwOmqB7XT-hp9NJ8
-  # botSign: sadfoiewjfoiwlejf_bot
-  botSign: ggyhhhh_bot 
+  token: 5302691216:AAHi_3cSkJKO2KYUDY3TwCfPt1Q-wLrj94I
+  # token: 5181534861:AAExYEVuJj1sc6PRooZMwOmqB7XT-hp9NJ8
+  botSign: sadfoiewjfoiwlejf_bot
+  # botSign: ggyhhhh_bot 
   jekaRealid: Jekadesigner
   pavelychRealId: dabdabdabdayada
   # souceChatID: -621831810

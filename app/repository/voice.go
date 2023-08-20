@@ -9,7 +9,6 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-
 type myVoiceRepo struct {
 	conn *pgxpool.Pool
 }
@@ -18,7 +17,6 @@ func NewVoiceRepository(db *pgxpool.Pool) models.VoiceMessageRepository {
 	return &myVoiceRepo{conn: db}
 	// defer db.Close(context.Background())
 }
-
 
 func (r *myVoiceRepo) GetRandVoiceMessage() (randVoiceId string, err error) {
 	query := `SELECT id FROM voice ORDER BY RANDOM() LIMIT 1;`
@@ -59,4 +57,3 @@ func (r *myVoiceRepo) AddVoiceId(voiceId string) (err error) {
 
 	return
 }
-
