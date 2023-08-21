@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"jekabot/models"
+	"jekabot/utils"
 )
 
 type myTaksaUsecases struct {
@@ -21,7 +22,7 @@ func (u *myTaksaUsecases) GetRandomTaksa() (bytes []byte, id string, err error) 
 		return
 	}
 
-	bytes, err = u.repo.GetBytesFromUrl(url)
+	bytes, err = utils.BytesFromUrl(url)
 	if err != nil {
 		return
 	}
