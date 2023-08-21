@@ -8,10 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"time"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
-
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -41,29 +38,15 @@ func main() {
 	taksaUs := us.NewTaksaUsecases(taksaRepo)
 	ytUs := us.NewYoutubeUsecases(ytRepo)
 
-	bot, err := tgbotapi.NewBotAPI(cTg.Token)
-	if err != nil {
-		log.Panic(err)
-	}
-
 	d := delivery.NewDelivery(
 		textUs,
 		voiceUs,
 		taksaUs,
 		ytUs,
 		cTg,
-		bot,
 	)
 
-	// bot.Debug = true
-
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-	updates := bot.GetUpdatesChan(u)
-
-	for update := range updates {
+	for update := range d.Updates {
 		if update.Message != nil { // If we got a message
 			go d.Router(update)
 		}

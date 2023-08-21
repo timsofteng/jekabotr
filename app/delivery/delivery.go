@@ -11,12 +11,13 @@ import (
 )
 
 type myDelivery struct {
-	TextUs   models.TextMessageUsecases
-	VoiceUs  models.VoiceMessageUsecases
-	TaksaUs  models.TaksaUsecases
-	YtUs     models.YoutubeUsecases
-	Config   models.TelegramConfig
-	Bot      *tgbotapi.BotAPI
+	textUs  models.TextMessageUsecases
+	voiceUs models.VoiceMessageUsecases
+	taksaUs models.TaksaUsecases
+	ytUs    models.YoutubeUsecases
+	config  models.TelegramConfig
+	bot     *tgbotapi.BotAPI
+	Updates tgbotapi.UpdatesChannel
 }
 
 const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
@@ -28,7 +29,14 @@ func NewDelivery(
 	taksaUs models.TaksaUsecases,
 	ytUs models.YoutubeUsecases,
 	c models.TelegramConfig,
-	bot *tgbotapi.BotAPI) *myDelivery {
+) *myDelivery {
+
+	bot, err := tgbotapi.NewBotAPI(c.Token)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	textMsgs, err := textUs.GetTextMessagesCount()
 	voiceMsgs, err := voiceUs.GetVoiceMessagesCount()
@@ -40,14 +48,20 @@ func NewDelivery(
 	}
 
 	log.Printf("total text messages: %s   total voices: %s", textMsgsStr, voiceMsgsStr)
+	// bot.Debug = true
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+	updates := bot.GetUpdatesChan(u)
 
 	return &myDelivery{
-		TextUs:   textUs,
-		VoiceUs:  voiceUs,
-		TaksaUs:  taksaUs,
-		YtUs:     ytUs,
-		Config:   c,
-		Bot:      bot,
+		textUs:  textUs,
+		voiceUs: voiceUs,
+		taksaUs: taksaUs,
+		ytUs:    ytUs,
+		config:  c,
+		bot:     bot,
+		Updates: updates,
 	}
 
 }
@@ -56,7 +70,7 @@ func (d *myDelivery) Router(update tgbotapi.Update) {
 	chatId := update.FromChat().ID
 	strChattId := strconv.Itoa(int(chatId))
 
-	if strChattId != d.Config.SouceChatID {
+	if strChattId != d.config.SouceChatID {
 		d.respRouter(update)
 	} else {
 		d.storeRouter(update)
@@ -87,15 +101,15 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 
 	if isReply != nil {
 		replyTo := update.Message.ReplyToMessage.From.UserName
-		isReplyToBot = replyTo == t.Config.BotSign
+		isReplyToBot = replyTo == t.config.BotSign
 	}
 
 	isTriggerWords := strings.Contains(strings.ToLower(textMsg), "jeka")
-	isAuthorJeka := author == t.Config.JekaRealid
-	isAuthorPavelych := author == t.Config.PavelychRealId
+	isAuthorJeka := author == t.config.JekaRealid
+	isAuthorPavelych := author == t.config.PavelychRealId
 	trigger := isTriggerWords || isAuthorJeka || isAuthorPavelych || isReplyToBot
 
-	//make rundomize for text messages more
+	//make rundomize for text messages properly
 	//get rid of this piece of shit
 	var fns []func(update tgbotapi.Update)
 	fns = append(fns, t.RespondWithText)
@@ -116,15 +130,15 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 func (d *myDelivery) storeRouter(update tgbotapi.Update) {
 	if update.Message.Voice != nil {
 		voiceId := update.Message.Voice.FileID
-		d.VoiceUs.AddVoiceId(voiceId)
+		d.voiceUs.AddVoiceId(voiceId)
 	} else {
-		d.TextUs.AddTextMessage(update.Message.Text)
+		d.textUs.AddTextMessage(update.Message.Text)
 	}
 }
 
 func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
 
-	bytes, id, err := d.TaksaUs.GetRandomTaksa()
+	bytes, id, err := d.taksaUs.GetRandomTaksa()
 	if err != nil {
 		log.Printf("rand taksa error: %v", err)
 	}
@@ -132,11 +146,11 @@ func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
 	msg := tgbotapi.NewPhoto(update.Message.Chat.ID, tgbotapi.FileBytes{Name: id, Bytes: bytes})
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.Caption = TAKSA_CAPTION
-	d.Bot.Send(msg)
+	d.bot.Send(msg)
 }
 
 func (d *myDelivery) RespondWithYtUrl(update tgbotapi.Update) {
-	ytUrl, err := d.YtUs.GetRandomVideoUrl()
+	ytUrl, err := d.ytUs.GetRandomVideoUrl()
 	if err != nil {
 		log.Printf("yt url error: %v", err)
 	}
@@ -145,26 +159,26 @@ func (d *myDelivery) RespondWithYtUrl(update tgbotapi.Update) {
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgText)
 	msg.ReplyToMessageID = update.Message.MessageID
-	d.Bot.Send(msg)
+	d.bot.Send(msg)
 }
 
 func (d *myDelivery) RespondWithText(update tgbotapi.Update) {
-	randMsg, err := d.TextUs.GetRandTextMessage()
+	randMsg, err := d.textUs.GetRandTextMessage()
 	if err != nil {
 		log.Printf("rand text error: %v", err)
 	}
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, randMsg)
 	msg.ReplyToMessageID = update.Message.MessageID
-	d.Bot.Send(msg)
+	d.bot.Send(msg)
 }
 
 func (d *myDelivery) RespondWithVoice(update tgbotapi.Update) {
-	voiceId, err := d.VoiceUs.GetRandVoiceMessage()
+	voiceId, err := d.voiceUs.GetRandVoiceMessage()
 	if err != nil {
 		log.Printf("rand voice error: %v", err)
 	}
 	voice := tgbotapi.NewVoice(update.Message.Chat.ID, tgbotapi.FileID(voiceId))
 	voice.ReplyToMessageID = update.Message.MessageID
-	d.Bot.Send(voice)
+	d.bot.Send(voice)
 }

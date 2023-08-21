@@ -9,6 +9,11 @@ import (
 	"net/http"
 )
 
+type resp struct {
+	Urls struct{ Full string }
+	Id   string
+}
+
 type myTaksaRepo struct {
 	UnsplashBaseUrl  string
 	UnsplashClientId string
@@ -44,7 +49,7 @@ func (c *myTaksaRepo) GetRandomTaksaUrl() (respUrl string, id string, err error)
 		return
 	}
 
-	var data models.Taksa
+	var data resp
 	err = json.Unmarshal(bytes, &data)
 
 	if err != nil {
