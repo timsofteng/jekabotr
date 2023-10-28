@@ -4,7 +4,7 @@
 // - protoc             v4.24.4
 // source: youtube.proto
 
-package __protot
+package proto
 
 import (
 	context "context"

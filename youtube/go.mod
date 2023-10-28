@@ -1,4 +1,4 @@
-module youtube 
+module github.com/timsofteng/jekabot/youtube
 
 go 1.21.0
 

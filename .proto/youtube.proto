@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/timsofteng/jekabot/.protot";
+option go_package = "github.com/timsofteng/jekabot/proto";
 
 service Youtube {
 	rpc GetRandomVideo(RandomVideoRequest) returns(RandomVideoResponse);

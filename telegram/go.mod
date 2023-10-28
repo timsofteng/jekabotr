@@ -1,4 +1,4 @@
-module telegram
+module github.com/timsofteng/jekabot/telegram
 
 go 1.21.0
 

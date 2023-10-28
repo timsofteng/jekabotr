@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"net"
-	pb "youtube/proto"
+	pb "github.com/timsofteng/jekabot"
 
 	models "youtube/models"
 
