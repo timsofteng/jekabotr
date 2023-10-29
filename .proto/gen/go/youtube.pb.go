@@ -20,14 +20,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type RandomVideoRequest struct {
+type GetRandomVideoRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *RandomVideoRequest) Reset() {
-	*x = RandomVideoRequest{}
+func (x *GetRandomVideoRequest) Reset() {
+	*x = GetRandomVideoRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_youtube_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -35,13 +35,13 @@ func (x *RandomVideoRequest) Reset() {
 	}
 }
 
-func (x *RandomVideoRequest) String() string {
+func (x *GetRandomVideoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RandomVideoRequest) ProtoMessage() {}
+func (*GetRandomVideoRequest) ProtoMessage() {}
 
-func (x *RandomVideoRequest) ProtoReflect() protoreflect.Message {
+func (x *GetRandomVideoRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_youtube_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,12 +53,12 @@ func (x *RandomVideoRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RandomVideoRequest.ProtoReflect.Descriptor instead.
-func (*RandomVideoRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetRandomVideoRequest.ProtoReflect.Descriptor instead.
+func (*GetRandomVideoRequest) Descriptor() ([]byte, []int) {
 	return file_youtube_proto_rawDescGZIP(), []int{0}
 }
 
-type RandomVideoResponse struct {
+type GetRandomVideoResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -66,8 +66,8 @@ type RandomVideoResponse struct {
 	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
 }
 
-func (x *RandomVideoResponse) Reset() {
-	*x = RandomVideoResponse{}
+func (x *GetRandomVideoResponse) Reset() {
+	*x = GetRandomVideoResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_youtube_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,13 +75,13 @@ func (x *RandomVideoResponse) Reset() {
 	}
 }
 
-func (x *RandomVideoResponse) String() string {
+func (x *GetRandomVideoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RandomVideoResponse) ProtoMessage() {}
+func (*GetRandomVideoResponse) ProtoMessage() {}
 
-func (x *RandomVideoResponse) ProtoReflect() protoreflect.Message {
+func (x *GetRandomVideoResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_youtube_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,12 +93,12 @@ func (x *RandomVideoResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RandomVideoResponse.ProtoReflect.Descriptor instead.
-func (*RandomVideoResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetRandomVideoResponse.ProtoReflect.Descriptor instead.
+func (*GetRandomVideoResponse) Descriptor() ([]byte, []int) {
 	return file_youtube_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RandomVideoResponse) GetUrl() string {
+func (x *GetRandomVideoResponse) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
@@ -109,18 +109,18 @@ var File_youtube_proto protoreflect.FileDescriptor
 
 var file_youtube_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x79, 0x6f, 0x75, 0x74, 0x75, 0x62, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0x14, 0x0a, 0x12, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x27, 0x0a, 0x13, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56,
-	0x69, 0x64, 0x65, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03,
-	0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x32, 0x46,
-	0x0a, 0x07, 0x59, 0x6f, 0x75, 0x74, 0x75, 0x62, 0x65, 0x12, 0x3b, 0x0a, 0x0e, 0x47, 0x65, 0x74,
-	0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x13, 0x2e, 0x52, 0x61,
+	0x17, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65,
+	0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x2a, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x52,
+	0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x75, 0x72, 0x6c, 0x32, 0x53, 0x0a, 0x0e, 0x59, 0x6f, 0x75, 0x74, 0x75, 0x62, 0x65, 0x53,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e,
+	0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x16, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x61,
 	0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x14, 0x2e, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x25, 0x5a, 0x23, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x74, 0x69, 0x6d, 0x73, 0x6f, 0x66, 0x74, 0x65, 0x6e, 0x67, 0x2f,
-	0x6a, 0x65, 0x6b, 0x61, 0x62, 0x6f, 0x74, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x1a, 0x17, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x56, 0x69, 0x64, 0x65,
+	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0f, 0x5a, 0x0d, 0x6a, 0x65, 0x6b,
+	0x61, 0x62, 0x6f, 0x74, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -137,12 +137,12 @@ func file_youtube_proto_rawDescGZIP() []byte {
 
 var file_youtube_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_youtube_proto_goTypes = []interface{}{
-	(*RandomVideoRequest)(nil),  // 0: RandomVideoRequest
-	(*RandomVideoResponse)(nil), // 1: RandomVideoResponse
+	(*GetRandomVideoRequest)(nil),  // 0: GetRandomVideoRequest
+	(*GetRandomVideoResponse)(nil), // 1: GetRandomVideoResponse
 }
 var file_youtube_proto_depIdxs = []int32{
-	0, // 0: Youtube.GetRandomVideo:input_type -> RandomVideoRequest
-	1, // 1: Youtube.GetRandomVideo:output_type -> RandomVideoResponse
+	0, // 0: YoutubeService.GetRandomVideo:input_type -> GetRandomVideoRequest
+	1, // 1: YoutubeService.GetRandomVideo:output_type -> GetRandomVideoResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -157,7 +157,7 @@ func file_youtube_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_youtube_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RandomVideoRequest); i {
+			switch v := v.(*GetRandomVideoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -169,7 +169,7 @@ func file_youtube_proto_init() {
 			}
 		}
 		file_youtube_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RandomVideoResponse); i {
+			switch v := v.(*GetRandomVideoResponse); i {
 			case 0:
 				return &v.state
 			case 1:

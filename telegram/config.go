@@ -9,7 +9,7 @@ import (
 // var C Config
 
 func ReadConfig() (*Config, error) {
-	config := &CombinedConfig{}
+	config := &MultiEnvConfig{}
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

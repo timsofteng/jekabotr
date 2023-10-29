@@ -8,14 +8,23 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	c, err := ReadConfig()
+	config, err := ReadConfig()
 
-	if err !=nil {
+	if err != nil {
 		log.Fatalf("error to read config, %e", err)
 	}
 
+	ytClient, ytGRPCConn, err := NewYoutubeGRPCClient()
+
+	defer ytGRPCConn.Close()
+
+	if err != nil {
+		log.Fatalf("failed to start yt grpc client, %e", err)
+	}
+
 	d := NewDelivery(
-		c,
+		ytClient,
+		config,
 	)
 
 	for update := range d.Updates {

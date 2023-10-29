@@ -19,89 +19,89 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Youtube_GetRandomVideo_FullMethodName = "/Youtube/GetRandomVideo"
+	YoutubeService_GetRandomVideo_FullMethodName = "/YoutubeService/GetRandomVideo"
 )
 
-// YoutubeClient is the client API for Youtube service.
+// YoutubeServiceClient is the client API for YoutubeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type YoutubeClient interface {
-	GetRandomVideo(ctx context.Context, in *RandomVideoRequest, opts ...grpc.CallOption) (*RandomVideoResponse, error)
+type YoutubeServiceClient interface {
+	GetRandomVideo(ctx context.Context, in *GetRandomVideoRequest, opts ...grpc.CallOption) (*GetRandomVideoResponse, error)
 }
 
-type youtubeClient struct {
+type youtubeServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewYoutubeClient(cc grpc.ClientConnInterface) YoutubeClient {
-	return &youtubeClient{cc}
+func NewYoutubeServiceClient(cc grpc.ClientConnInterface) YoutubeServiceClient {
+	return &youtubeServiceClient{cc}
 }
 
-func (c *youtubeClient) GetRandomVideo(ctx context.Context, in *RandomVideoRequest, opts ...grpc.CallOption) (*RandomVideoResponse, error) {
-	out := new(RandomVideoResponse)
-	err := c.cc.Invoke(ctx, Youtube_GetRandomVideo_FullMethodName, in, out, opts...)
+func (c *youtubeServiceClient) GetRandomVideo(ctx context.Context, in *GetRandomVideoRequest, opts ...grpc.CallOption) (*GetRandomVideoResponse, error) {
+	out := new(GetRandomVideoResponse)
+	err := c.cc.Invoke(ctx, YoutubeService_GetRandomVideo_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// YoutubeServer is the server API for Youtube service.
-// All implementations must embed UnimplementedYoutubeServer
+// YoutubeServiceServer is the server API for YoutubeService service.
+// All implementations must embed UnimplementedYoutubeServiceServer
 // for forward compatibility
-type YoutubeServer interface {
-	GetRandomVideo(context.Context, *RandomVideoRequest) (*RandomVideoResponse, error)
-	mustEmbedUnimplementedYoutubeServer()
+type YoutubeServiceServer interface {
+	GetRandomVideo(context.Context, *GetRandomVideoRequest) (*GetRandomVideoResponse, error)
+	mustEmbedUnimplementedYoutubeServiceServer()
 }
 
-// UnimplementedYoutubeServer must be embedded to have forward compatible implementations.
-type UnimplementedYoutubeServer struct {
+// UnimplementedYoutubeServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedYoutubeServiceServer struct {
 }
 
-func (UnimplementedYoutubeServer) GetRandomVideo(context.Context, *RandomVideoRequest) (*RandomVideoResponse, error) {
+func (UnimplementedYoutubeServiceServer) GetRandomVideo(context.Context, *GetRandomVideoRequest) (*GetRandomVideoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRandomVideo not implemented")
 }
-func (UnimplementedYoutubeServer) mustEmbedUnimplementedYoutubeServer() {}
+func (UnimplementedYoutubeServiceServer) mustEmbedUnimplementedYoutubeServiceServer() {}
 
-// UnsafeYoutubeServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to YoutubeServer will
+// UnsafeYoutubeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to YoutubeServiceServer will
 // result in compilation errors.
-type UnsafeYoutubeServer interface {
-	mustEmbedUnimplementedYoutubeServer()
+type UnsafeYoutubeServiceServer interface {
+	mustEmbedUnimplementedYoutubeServiceServer()
 }
 
-func RegisterYoutubeServer(s grpc.ServiceRegistrar, srv YoutubeServer) {
-	s.RegisterService(&Youtube_ServiceDesc, srv)
+func RegisterYoutubeServiceServer(s grpc.ServiceRegistrar, srv YoutubeServiceServer) {
+	s.RegisterService(&YoutubeService_ServiceDesc, srv)
 }
 
-func _Youtube_GetRandomVideo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RandomVideoRequest)
+func _YoutubeService_GetRandomVideo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRandomVideoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(YoutubeServer).GetRandomVideo(ctx, in)
+		return srv.(YoutubeServiceServer).GetRandomVideo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Youtube_GetRandomVideo_FullMethodName,
+		FullMethod: YoutubeService_GetRandomVideo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(YoutubeServer).GetRandomVideo(ctx, req.(*RandomVideoRequest))
+		return srv.(YoutubeServiceServer).GetRandomVideo(ctx, req.(*GetRandomVideoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Youtube_ServiceDesc is the grpc.ServiceDesc for Youtube service.
+// YoutubeService_ServiceDesc is the grpc.ServiceDesc for YoutubeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Youtube_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Youtube",
-	HandlerType: (*YoutubeServer)(nil),
+var YoutubeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "YoutubeService",
+	HandlerType: (*YoutubeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetRandomVideo",
-			Handler:    _Youtube_GetRandomVideo_Handler,
+			Handler:    _YoutubeService_GetRandomVideo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

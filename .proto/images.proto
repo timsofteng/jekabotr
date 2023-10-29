@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "jekabot/proto";
+
+service ImagesService {
+	rpc GetRandomTaksaImg(GetRandomTaksaImgRequest) returns(GetRandomTaksaImgResponse);
+};
+
+message GetRandomTaksaImgRequest {};
+
+message GetRandomTaksaImgResponse {
+	bytes bin = 1;
+	string id = 2;
+};

@@ -9,7 +9,7 @@ type Config struct {
 }
 
 
-type CombinedConfig struct {
+type MultiEnvConfig struct {
 	Dev Config
 	Prod Config
 }
