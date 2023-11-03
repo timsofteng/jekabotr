@@ -1,4 +1,5 @@
 package usecases
+
 import (
 	models "images/models"
 )
@@ -7,6 +8,8 @@ type myTaksaUsecases struct {
 	repo models.ImagesRepository
 }
 
+const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
+
 func NewTaksaUsecases(
 	repo models.ImagesRepository) models.ImagesUsecases {
 	return &myTaksaUsecases{
@@ -14,18 +17,12 @@ func NewTaksaUsecases(
 	}
 }
 
-func (u *myTaksaUsecases) GetRandomTaksa() ([]byte, string, error) {
-	url, id, err := u.repo.GetImgByQuery("dachshund")
+func (u myTaksaUsecases) RandomTaksaGetter() ([]byte, string, string, error) {
+	bin, id, err := u.repo.ImgByQueryFetcher("dachshund")
 
 	if err != nil {
-		return nil, id, err
+		return nil, id, "", err
 	}
 
-	bin, err := BytesFromUrl(url)
-
-	if err != nil {
-		return bin, id, err
-	}
-
-	return bin, id, err
+	return bin, id, TAKSA_CAPTION, err
 }

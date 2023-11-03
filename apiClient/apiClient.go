@@ -34,5 +34,5 @@ func (a *myHttpClient) DoRequest(req *http.Request) (body []byte, err error) {
 		return nil, fmt.Errorf("%s", body)
 	}
 
-	return
+	return body, nil
 }

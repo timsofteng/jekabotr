@@ -10,4 +10,5 @@ message GetRandomVideoRequest {};
 
 message GetRandomVideoResponse {
 	string url = 1;
+	string caption = 2;
 };

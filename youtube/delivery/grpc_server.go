@@ -13,6 +13,8 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const YT_LINK_CAPTION = "Взгляните на это видео:\n\n"
+
 type server struct {
 	// type embedded to comply with Google lib
 	pb.UnimplementedYoutubeServiceServer
@@ -50,5 +52,5 @@ func (s *server) GetRandomVideo(ctx context.Context, request *pb.GetRandomVideoR
 
 	log.Printf("Url fetched successfully %v", url)
 
-	return &pb.GetRandomVideoResponse{Url: url}, nil
+	return &pb.GetRandomVideoResponse{Url: url, Caption: YT_LINK_CAPTION}, nil
 }

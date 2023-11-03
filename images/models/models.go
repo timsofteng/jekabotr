@@ -1,9 +1,9 @@
 package models
 
 type ImagesRepository interface {
-	GetImgByQuery(query string) (string, string, error)
+	ImgByQueryFetcher(query string) ([]byte, string, error)
 }
 
 type ImagesUsecases interface {
-	GetRandomTaksa() (bin []byte, id string, err error)
+	RandomTaksaGetter() (bin []byte, id string, caption string, err error)
 }

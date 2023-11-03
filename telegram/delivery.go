@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"math/rand"
 	"strconv"
 	"strings"
 
@@ -13,17 +12,16 @@ import (
 )
 
 type myDelivery struct {
-	ytClient pb.YoutubeServiceClient
-	config   *Config
-	bot      *tgbotapi.BotAPI
-	Updates  tgbotapi.UpdatesChannel
+	ytGRPCClient     pb.YoutubeServiceClient
+	imagesGRPCClient pb.ImagesServiceClient
+	config           *Config
+	bot              *tgbotapi.BotAPI
+	Updates          tgbotapi.UpdatesChannel
 }
 
-const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
-const YT_LINK_CAPTION = "Взгляните на это видео:\n\n"
-
 func NewDelivery(
-	ytClient pb.YoutubeServiceClient,
+	ytGRPCClient pb.YoutubeServiceClient,
+	imagesGRPCClient pb.ImagesServiceClient,
 	c *Config,
 ) *myDelivery {
 
@@ -53,11 +51,11 @@ func NewDelivery(
 	return &myDelivery{
 		// textUs:  textUs,
 		// voiceUs: voiceUs,
-		// taksaUs: taksaUs,
-		ytClient: ytClient,
-		config:   c,
-		bot:      bot,
-		Updates:  updates,
+		ytGRPCClient:     ytGRPCClient,
+		imagesGRPCClient: imagesGRPCClient,
+		config:           c,
+		bot:              bot,
+		Updates:          updates,
 	}
 
 }
@@ -81,33 +79,33 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 
 	log.Printf("[%s] %s \n", author, textMsg)
 
-	// if strings.Contains(strings.ToLower(textMsg), "jeka_taksa") {
-	// 	t.RespondWithTaksa(update)
-	// 	return
-	// }
+	if strings.Contains(strings.ToLower(textMsg), "jeka_taksa") {
+		t.RespondWithTaksa(update)
+		return
+	}
 
 	if strings.Contains(strings.ToLower(textMsg), "jeka_video") {
 		t.RespondWithYtUrl(update)
 		return
 	}
 
-	isReply := update.Message.ReplyToMessage
+	// isReply := update.Message.ReplyToMessage
 
-	var isReplyToBot bool
+	// var isReplyToBot bool
 
-	if isReply != nil {
-		replyTo := update.Message.ReplyToMessage.From.UserName
-		isReplyToBot = replyTo == t.config.BotSign
-	}
+	// if isReply != nil {
+	// 	replyTo := update.Message.ReplyToMessage.From.UserName
+	// 	isReplyToBot = replyTo == t.config.BotSign
+	// }
 
-	isTriggerWords := strings.Contains(strings.ToLower(textMsg), "jeka")
-	isAuthorJeka := author == t.config.JekaRealid
-	isAuthorPavelych := author == t.config.PavelychRealId
-	trigger := isTriggerWords || isAuthorJeka || isAuthorPavelych || isReplyToBot
+	// isTriggerWords := strings.Contains(strings.ToLower(textMsg), "jeka")
+	// isAuthorJeka := author == t.config.JekaRealid
+	// isAuthorPavelych := author == t.config.PavelychRealId
+	// trigger := isTriggerWords || isAuthorJeka || isAuthorPavelych || isReplyToBot
 
 	//make rundomize for text messages properly
 	//get rid of this piece of shit
-	var fns []func(update tgbotapi.Update)
+	// var fns []func(update tgbotapi.Update)
 	// fns = append(fns, t.RespondWithText)
 	// fns = append(fns, t.RespondWithText)
 	// fns = append(fns, t.RespondWithText)
@@ -116,11 +114,11 @@ func (t *myDelivery) respRouter(update tgbotapi.Update) {
 	// fns = append(fns, t.RespondWithText)
 	// fns = append(fns, t.RespondWithVoice)
 
-	randFunc := fns[rand.Intn(len(fns))]
+	// randFunc := fns[rand.Intn(len(fns))]
 
-	if trigger {
-		randFunc(update)
-	}
+	// if trigger {
+	// 	randFunc(update)
+	// }
 }
 
 func (d *myDelivery) storeRouter(update tgbotapi.Update) {
@@ -132,30 +130,41 @@ func (d *myDelivery) storeRouter(update tgbotapi.Update) {
 	}
 }
 
-// func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
+func (d *myDelivery) RespondWithTaksa(update tgbotapi.Update) {
 
-// 	bytes, id, err := d.taksaUs.GetRandomTaksa()
-// 	if err != nil {
-// 		log.Printf("rand taksa error: %v", err)
-// 	}
-
-// 	msg := tgbotapi.NewPhoto(update.Message.Chat.ID, tgbotapi.FileBytes{Name: id, Bytes: bytes})
-// 	msg.ReplyToMessageID = update.Message.MessageID
-// 	msg.Caption = TAKSA_CAPTION
-// 	d.bot.Send(msg)
-// }
-
-func (d *myDelivery) RespondWithYtUrl(update tgbotapi.Update) {
-	resp, err := d.ytClient.GetRandomVideo(context.Background(), &pb.GetRandomVideoRequest{})
+	resp, err := d.imagesGRPCClient.GetRandomTaksa(context.Background(), &pb.GetRandomTaksaRequest{})
 	if err != nil {
-		log.Printf("yt url error: %v", err)
+		log.Printf("rand taksa error: %v", err)
 	}
 
-	msgText := YT_LINK_CAPTION + resp.Url
+	msg := tgbotapi.NewPhoto(update.Message.Chat.ID, tgbotapi.FileBytes{Name: resp.Id, Bytes: resp.Bin})
+	msg.ReplyToMessageID = update.Message.MessageID
+	msg.Caption = resp.Caption
+	log.Print(resp.Caption)
+
+	_, err = d.bot.Send(msg)
+	
+	if err != nil {
+		log.Printf("tg bot send error: %v", err)
+	}
+}
+
+func (d *myDelivery) RespondWithYtUrl(update tgbotapi.Update) {
+	resp, err := d.ytGRPCClient.GetRandomVideo(context.Background(), &pb.GetRandomVideoRequest{})
+	if err != nil {
+		log.Printf("yt grpc error: %v", err)
+	}
+
+	msgText := resp.Caption + resp.Url
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgText)
 	msg.ReplyToMessageID = update.Message.MessageID
-	d.bot.Send(msg)
+
+	_, err = d.bot.Send(msg)
+	
+	if err != nil {
+		log.Printf("tg bot send error: %v", err)
+	}
 }
 
 // func (d *myDelivery) RespondWithText(update tgbotapi.Update) {

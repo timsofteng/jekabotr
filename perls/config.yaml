@@ -1,0 +1,26 @@
+database:
+  type: postgres
+  user: tim
+  password: 1111
+  net: tcp
+  addr: 127.0.0.1:5432
+  # addr: 45.148.31.214:5432
+  dbname: jekabot_dev
+  allowNativePasswords: true
+  params:
+    parseTime: "true"
+
+telegram:
+  token: 5302691216:AAHi_3cSkJKO2KYUDY3TwCfPt1Q-wLrj94I
+  botSign: sadfoiewjfoiwlejf_bot
+  jekaRealid: Jekadesigner
+  pavelychRealId: dabdabdabdayada
+  # souceChatID: -621831810
+  souceChatID: -377297062
+
+imgApi: 
+  baseUrl: https://api.unsplash.com
+  clientId: Sqq_xVTdqpJVTi6IQrN2_HmCg_WqZo68iDyoJL0fmXI
+
+youtubeApi:
+  key: AIzaSyBit2E5eTkovj4Y87AFsBkgNjXGauYjRG4

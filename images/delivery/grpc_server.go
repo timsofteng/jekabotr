@@ -38,16 +38,16 @@ func NewGRPCServer(uc models.ImagesUsecases) {
 	}
 }
 
-func (s *server) GetRandomTaksaImg(ctx context.Context, request *pb.GetRandomTaksaImgRequest) (*pb.GetRandomTaksaImgResponse, error) {
+func (s server) GetRandomTaksa(ctx context.Context, request *pb.GetRandomTaksaRequest) (*pb.GetRandomTaksaResponse, error) {
 	log.Println("Random taksa called")
 
-	bin, id, err := s.uc.GetRandomTaksa()
+	bin, id, caption, err := s.uc.RandomTaksaGetter()
 
 	if err != nil {
 		log.Println("Failded to get video")
 	}
 
-	log.Printf("Taksa fetched successfully, id: %v", id)
+	log.Println("Taksa fetched successfully")
 
-	return &pb.GetRandomTaksaImgResponse{Id: id, Bin: bin}, nil
+	return &pb.GetRandomTaksaResponse{Id: id, Bin: bin, Caption: caption}, nil
 }

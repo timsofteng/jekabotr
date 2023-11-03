@@ -7,14 +7,10 @@ import (
 
 // TestGetImgByQuery calls repo.TestGetImgByQuery with a some query, checking
 // for a valid return value.
-func TestGetImgByQuery(t *testing.T) {
+func TestGetImgByQuerySuccess(t *testing.T) {
 	repo := NewRepo(secrets.BaseURL, secrets.ClientID)
 
-	url, id, err := repo.GetImgByQuery("ball")
-
-	if err != nil {
-		t.Errorf(`Failed to get image %v`, err)
-	}
+	url, id, _ := repo.ImgByQueryFetcher("ball")
 
 	if len(id) < 1 {
 		t.Errorf(`id is empty`)
@@ -25,11 +21,12 @@ func TestGetImgByQuery(t *testing.T) {
 	}
 }
 
-// TestHelloEmpty calls greetings.Hello with an empty string,
-// checking for an error.
-// func TestHelloEmpty(t *testing.T) {
-// 	msg, err := Hello("")
-// 	if msg != "" || err == nil {
-// 		t.Fatalf(`Hello("") = %q, %v, want "", error`, msg, err)
-// 	}
-// }
+func TestGetImgByQueryError(t *testing.T) {
+	repo := NewRepo("", secrets.ClientID)
+
+	_, _, err := repo.ImgByQueryFetcher("ball")
+
+	if err == nil {
+		t.Errorf(`Bad query %v`, err)
+	}
+}

@@ -5,7 +5,10 @@ dev:
 	air .
 
 test:
-	go test -cover ./...
+	go test ./... -coverprofile=cover.out
+
+test-cover:
+	go tool cover -html=cover.out
 
 lint:
 	golangci-lint run

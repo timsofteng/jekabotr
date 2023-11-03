@@ -14,11 +14,20 @@ services:
     volumes:
       - ./db/data:/var/lib/postgresql/data
 
-  jekabot:
-    container_name: jekabot
-    build: ./app
+  telegram:
+    container_name: telegram
+    build: ./telegram
     depends_on:
-      - db
+      - images
+      - youtube
+
+  images:
+    container_name: images
+    build: ./images
+
+  youtube:
+    container_name: youtube
+    build: ./youtube
 
 volumes:
   db:

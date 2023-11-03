@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ImagesService_GetRandomTaksaImg_FullMethodName = "/ImagesService/GetRandomTaksaImg"
+	ImagesService_GetRandomTaksa_FullMethodName = "/ImagesService/GetRandomTaksa"
 )
 
 // ImagesServiceClient is the client API for ImagesService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImagesServiceClient interface {
-	GetRandomTaksaImg(ctx context.Context, in *GetRandomTaksaImgRequest, opts ...grpc.CallOption) (*GetRandomTaksaImgResponse, error)
+	GetRandomTaksa(ctx context.Context, in *GetRandomTaksaRequest, opts ...grpc.CallOption) (*GetRandomTaksaResponse, error)
 }
 
 type imagesServiceClient struct {
@@ -37,9 +37,9 @@ func NewImagesServiceClient(cc grpc.ClientConnInterface) ImagesServiceClient {
 	return &imagesServiceClient{cc}
 }
 
-func (c *imagesServiceClient) GetRandomTaksaImg(ctx context.Context, in *GetRandomTaksaImgRequest, opts ...grpc.CallOption) (*GetRandomTaksaImgResponse, error) {
-	out := new(GetRandomTaksaImgResponse)
-	err := c.cc.Invoke(ctx, ImagesService_GetRandomTaksaImg_FullMethodName, in, out, opts...)
+func (c *imagesServiceClient) GetRandomTaksa(ctx context.Context, in *GetRandomTaksaRequest, opts ...grpc.CallOption) (*GetRandomTaksaResponse, error) {
+	out := new(GetRandomTaksaResponse)
+	err := c.cc.Invoke(ctx, ImagesService_GetRandomTaksa_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *imagesServiceClient) GetRandomTaksaImg(ctx context.Context, in *GetRand
 // All implementations must embed UnimplementedImagesServiceServer
 // for forward compatibility
 type ImagesServiceServer interface {
-	GetRandomTaksaImg(context.Context, *GetRandomTaksaImgRequest) (*GetRandomTaksaImgResponse, error)
+	GetRandomTaksa(context.Context, *GetRandomTaksaRequest) (*GetRandomTaksaResponse, error)
 	mustEmbedUnimplementedImagesServiceServer()
 }
 
@@ -58,8 +58,8 @@ type ImagesServiceServer interface {
 type UnimplementedImagesServiceServer struct {
 }
 
-func (UnimplementedImagesServiceServer) GetRandomTaksaImg(context.Context, *GetRandomTaksaImgRequest) (*GetRandomTaksaImgResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRandomTaksaImg not implemented")
+func (UnimplementedImagesServiceServer) GetRandomTaksa(context.Context, *GetRandomTaksaRequest) (*GetRandomTaksaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRandomTaksa not implemented")
 }
 func (UnimplementedImagesServiceServer) mustEmbedUnimplementedImagesServiceServer() {}
 
@@ -74,20 +74,20 @@ func RegisterImagesServiceServer(s grpc.ServiceRegistrar, srv ImagesServiceServe
 	s.RegisterService(&ImagesService_ServiceDesc, srv)
 }
 
-func _ImagesService_GetRandomTaksaImg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRandomTaksaImgRequest)
+func _ImagesService_GetRandomTaksa_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRandomTaksaRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ImagesServiceServer).GetRandomTaksaImg(ctx, in)
+		return srv.(ImagesServiceServer).GetRandomTaksa(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ImagesService_GetRandomTaksaImg_FullMethodName,
+		FullMethod: ImagesService_GetRandomTaksa_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ImagesServiceServer).GetRandomTaksaImg(ctx, req.(*GetRandomTaksaImgRequest))
+		return srv.(ImagesServiceServer).GetRandomTaksa(ctx, req.(*GetRandomTaksaRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +100,8 @@ var ImagesService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ImagesServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetRandomTaksaImg",
-			Handler:    _ImagesService_GetRandomTaksaImg_Handler,
+			MethodName: "GetRandomTaksa",
+			Handler:    _ImagesService_GetRandomTaksa_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
