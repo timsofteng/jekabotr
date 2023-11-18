@@ -2,18 +2,16 @@ package delivery
 
 import (
 	"context"
+	pb "github.com/jeka-designer/proto/gen/go"
 	"log"
 	"net"
 	"os"
-	pb "proto"
 
-	models "youtube/models"
+	"youtube/models"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
-
-const YT_LINK_CAPTION = "Взгляните на это видео:\n\n"
 
 type server struct {
 	// type embedded to comply with Google lib
@@ -21,36 +19,37 @@ type server struct {
 	uc models.YoutubeUsecases
 }
 
-func NewGRPCServer(uc models.YoutubeUsecases) {
-	port := ":" + os.Getenv("YOUTUBE_GRPC_PORT")
+func NewGRPCServer(uc models.YoutubeUsecases) error {
+	port := ":" + os.Getenv("GRPC_PORT")
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	s := grpc.NewServer()
 	reflection.Register(s)
 	pb.RegisterYoutubeServiceServer(s, &server{uc: uc})
 
-	log.Println("starting youtube service on port", port)
+	log.Println("starting grpc server on port", port)
 
 	if err := s.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		return err
 	}
+
+	return err
 }
 
 func (s *server) GetRandomVideo(ctx context.Context, request *pb.GetRandomVideoRequest) (*pb.GetRandomVideoResponse, error) {
-	log.Println("Random video called")
-	var url string
+	var url, caption string
 	var err error
 
-	url, err = s.uc.GetRandomVideoUrl()
+	url, caption, err = s.uc.GetRandomVideoUrl()
 
 	if err != nil {
-		log.Println("Failded to get video")
+		return nil, err
 	}
 
 	log.Printf("Url fetched successfully %v", url)
 
-	return &pb.GetRandomVideoResponse{Url: url, Caption: YT_LINK_CAPTION}, nil
+	return &pb.GetRandomVideoResponse{Url: url, Caption: caption}, nil
 }

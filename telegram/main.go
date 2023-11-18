@@ -2,7 +2,10 @@ package main
 
 import (
 	"log"
-	repo "telegram/repo"
+	"telegram/delivery"
+	"telegram/repo"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
@@ -14,24 +17,36 @@ func main() {
 	}
 
 	ytClient, ytGRPCConn, err := repo.NewYoutubeGRPCClient()
-	imagesClient, imagesGRPCConn, err := repo.NewImagesGRPCClient()
-
-	defer ytGRPCConn.Close()
-	defer imagesGRPCConn.Close()
-
 	if err != nil {
 		log.Fatalf("failed to start yt grpc client, %e", err)
 	}
 
-	d := NewDelivery(
+	imagesClient, imagesGRPCConn, err := repo.NewImagesGRPCClient()
+	if err != nil {
+		log.Fatalf("failed to start images grpc client, %e", err)
+	}
+
+	defer ytGRPCConn.Close()
+	defer imagesGRPCConn.Close()
+
+	d, err := delivery.NewDelivery(
 		ytClient,
 		imagesClient,
 		config,
 	)
 
+	if err != nil {
+		log.Printf("%v", err)
+	}
+
 	for update := range d.Updates {
 		if update.Message != nil { // If we got a message
-			go d.Router(update)
+			go func(update tgbotapi.Update) {
+				err := d.Router(update)
+				if err != nil {
+					log.Printf("%v", err)
+				}
+			}(update)
 		}
 	}
 

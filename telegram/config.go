@@ -4,12 +4,12 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
+	"telegram/models"
 )
 
-// var C Config
 
-func ReadConfig() (*Config, error) {
-	config := &MultiEnvConfig{}
+func ReadConfig() (*models.Config, error) {
+	config := &models.MultiEnvConfig{}
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

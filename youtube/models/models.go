@@ -5,5 +5,5 @@ type YoutubeRepository interface {
 }
 
 type YoutubeUsecases interface {
-	GetRandomVideoUrl() (string, error)
+	GetRandomVideoUrl() (url string, caption string, err error)
 }

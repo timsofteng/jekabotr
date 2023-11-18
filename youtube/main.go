@@ -1,17 +1,25 @@
 package main
 
 import (
-	delivery "youtube/delivery"
-	repo "youtube/repository"
+	"log"
+	"os"
+	"youtube/delivery"
+	"youtube/repo"
 	uc "youtube/usecases"
-
 )
 
-const KEY = "AIzaSyBit2E5eTkovj4Y87AFsBkgNjXGauYjRG4"
-
 func main() {
-	repo := repo.NewYoutubeRepository(KEY)
+	apiKey := os.Getenv("API_KEY")
+
+	if len(apiKey) < 1 {
+		log.Fatal("No api key")
+	}
+
+	repo := repo.NewYoutubeRepository(apiKey)
 	usecases := uc.NewYoutubeUsecases(repo)
 
-	delivery.NewGRPCServer(usecases)
+	err := delivery.NewGRPCServer(usecases)
+	if err != nil {
+		log.Printf("%v", err)
+	}
 }

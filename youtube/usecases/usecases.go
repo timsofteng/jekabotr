@@ -2,12 +2,15 @@ package usecases
 
 import (
 	"log"
-	models "youtube/models"
+	"youtube/models"
+	"youtube/randQuery"
 )
 
 type myYtUsecases struct {
 	repo models.YoutubeRepository
 }
+
+const YT_LINK_CAPTION = "Взгляните на это видео:\n\n"
 
 func NewYoutubeUsecases(
 	repo models.YoutubeRepository) models.YoutubeUsecases {
@@ -16,19 +19,17 @@ func NewYoutubeUsecases(
 	}
 }
 
-func (u *myYtUsecases) GetRandomVideoUrl() (string, error) {
+func (u *myYtUsecases) GetRandomVideoUrl() (id string, caption string, err error) {
 	retries := 4
-
-	var id string
-	var err error
+	caption = YT_LINK_CAPTION
 
 	for retries > 0 {
-		randQuery := RandString(3)
-		randOrder := RandOrder()
-		id, err = u.repo.GetVideoUrl(randQuery, randOrder)
+		randQueryStr := randQuery.String(3)
+		randOrder := randQuery.Order()
+		id, err = u.repo.GetVideoUrl(randQueryStr, randOrder)
 
 		if err != nil {
-			return id, err
+			return id, caption, err
 		}
 
 		if id == "" {
@@ -42,5 +43,5 @@ func (u *myYtUsecases) GetRandomVideoUrl() (string, error) {
 
 	url := "https://www.youtube.com/watch?v=" + id
 
-	return url, nil
+	return url, caption, nil
 }

@@ -1,8 +1,8 @@
 build:
-	go build .
+	cd cmd && go build -o images .
 
 dev:
-	air .
+	cd cmd && air .
 
 test:
 	go test ./... -coverprofile=cover.out
@@ -14,3 +14,5 @@ lint:
 	golangci-lint run
 
 .PHONY: proto
+.PHONY: build
+.PHONY: dev

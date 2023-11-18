@@ -1,34 +1,56 @@
 version: "0.1"
+x-common-variables: &common-variables
+  GOPRIVATE: ${GOPRIVATE}
+  GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
+
 services:
-  db:
-    container_name: db
-    image: postgres:14-alpine
-    stdin_open: true # docker run -i
-    tty: true # docker run -t
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./db/data:/var/lib/postgresql/data
+  #   db:
+  #     container_name: db
+  #     image: postgres:14-alpine
+  #     stdin_open: true # docker run -i
+  #     tty: true # docker run -t
+  #     restart: always
+  #     environment:
+  #       - POSTGRES_USER=postgres
+  #       - POSTGRES_PASSWORD=postgres
+  #     ports:
+  #       - "5432:5432"
+  #     volumes:
+  #       - ./db/data:/var/lib/postgresql/data
 
   telegram:
     container_name: telegram
-    build: ./telegram
-    depends_on:
-      - images
-      - youtube
+    expose:
+      - ${IMAGES_GRPC_PORT}
+      - ${YOUTUBE_GRPC_PORT}
+    environment:
+      IMAGES_GRPC_PORT: images:${IMAGES_GRPC_PORT}
+      YOUTUBE_GRPC_PORT: youtube:${YOUTUBE_GRPC_PORT}
+    build:
+      context: ./telegram
+      args:
+        <<: *common-variables
 
   images:
     container_name: images
-    build: ./images
+    environment:
+      GRPC_PORT: ${IMAGES_GRPC_PORT}
+      UNSHPLASH_CLIENT_ID: ${UNSHPLASH_CLIENT_ID}
+    build:
+      context: ./images
+      args:
+        <<: *common-variables
 
   youtube:
     container_name: youtube
-    build: ./youtube
-
-volumes:
-  db:
-    driver: local
+    build:
+      context: ./youtube
+      args:
+        <<: *common-variables
+    environment:
+      GRPC_PORT: ${YOUTUBE_GRPC_PORT}
+      API_KEY: ${YOUTUBE_API_KEY}
+# volumes:
+#   db:
+#     driver: local
+#

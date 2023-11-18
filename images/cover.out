@@ -1,0 +1,19 @@
+mode: set
+images/pkg/delivery/grpcServer/grpc_server.go:24.58,27.16 2 1
+images/pkg/delivery/grpcServer/grpc_server.go:27.16,29.3 1 0
+images/pkg/delivery/grpcServer/grpc_server.go:31.2,37.42 5 1
+images/pkg/delivery/grpcServer/grpc_server.go:37.42,39.3 1 0
+images/pkg/delivery/grpcServer/grpc_server.go:41.2,41.15 1 0
+images/pkg/delivery/grpcServer/grpc_server.go:44.124,49.16 3 0
+images/pkg/delivery/grpcServer/grpc_server.go:49.16,51.3 1 0
+images/pkg/delivery/grpcServer/grpc_server.go:53.2,55.50 2 0
+images/pkg/repo/unsplash/unsplash.go:30.66,38.2 2 1
+images/pkg/repo/unsplash/unsplash.go:40.94,44.16 2 1
+images/pkg/repo/unsplash/unsplash.go:44.16,46.3 1 0
+images/pkg/repo/unsplash/unsplash.go:48.2,55.16 6 1
+images/pkg/repo/unsplash/unsplash.go:55.16,57.3 1 0
+images/pkg/repo/unsplash/unsplash.go:59.2,62.16 3 1
+images/pkg/repo/unsplash/unsplash.go:62.16,64.3 1 0
+images/pkg/repo/unsplash/unsplash.go:66.2,68.16 2 1
+images/pkg/repo/unsplash/unsplash.go:68.16,70.3 1 0
+images/pkg/repo/unsplash/unsplash.go:72.2,74.17 2 1
