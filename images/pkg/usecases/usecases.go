@@ -8,21 +8,21 @@ type repository interface {
 	ImgByQueryFetcher(ctx context.Context, query string) (string, error)
 }
 
-type myTaksaUsecases struct {
+type myUsecases struct {
 	repo repository
 }
 
-const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
+// const TAKSA_CAPTION = "Собака умная может и самоутилизироваться )\n😍😍😍😍"
 
 func New(
-	repo repository) *myTaksaUsecases {
-	return &myTaksaUsecases{
+	repo repository) *myUsecases {
+	return &myUsecases{
 		repo: repo,
 	}
 }
 
-func (u myTaksaUsecases) RandomTaksa(ctx context.Context) (string, error) {
-	url, err := u.repo.ImgByQueryFetcher(ctx, "dachshund")
+func (u myUsecases) RandomImg(ctx context.Context, query string) (string, error) {
+	url, err := u.repo.ImgByQueryFetcher(ctx, query)
 
 	if err != nil {
 		return "", err

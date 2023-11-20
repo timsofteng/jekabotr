@@ -4,13 +4,13 @@ go 1.21.0
 
 require (
 	github.com/go-playground/validator/v10 v10.16.0
-	github.com/jeka-designer/proto/gen/go v0.0.0-20231112200512-dd03a446c600
+	github.com/jeka-designer/proto/gen/go v0.0.0-20231118215624-1421dcb937cb
 	golang.org/x/net v0.18.0
 	google.golang.org/grpc v1.59.0
 )
 
 require (
-	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect

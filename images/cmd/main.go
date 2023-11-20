@@ -4,12 +4,13 @@ import (
 	"images/internal/config"
 	"images/internal/secrets"
 	"images/pkg/delivery/grpcServer"
+	"images/pkg/delivery/httpServer"
 	"images/pkg/httpClient"
 	"images/pkg/repo/unsplash"
 	"images/pkg/usecases"
 	"log"
-
-	"google.golang.org/grpc"
+	"os"
+	"os/signal"
 )
 
 func main() {
@@ -31,7 +32,8 @@ func main() {
 
 	uc := usecases.New(newUnsplashRepo)
 
-	grpcServerCh := make(chan *grpc.Server)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
 
 	go func() {
 		s, err := grpcServer.New(uc, cfg.GRPCPort)
@@ -40,13 +42,17 @@ func main() {
 			log.Printf("%v", err)
 		}
 
-		grpcServerCh <- s
+		defer s.Stop()
+	}()
+
+	go func() {
+		err := httpServer.New(uc, cfg.HTTPPort)
+
+		if err != nil {
+			log.Printf("%v", err)
+		}
 
 	}()
 
-	newGRPCServer := <-grpcServerCh
-
-	defer newGRPCServer.Stop()
-
-	select {} // block forever
+	<-quit
 }

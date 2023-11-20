@@ -12,7 +12,7 @@ import (
 )
 
 type usecases interface {
-	RandomTaksa(ctx context.Context) (url string, err error)
+	RandomImg(ctx context.Context, query string) (url string, err error)
 }
 
 type server struct {
@@ -32,7 +32,7 @@ func New(uc usecases, port string) (*grpc.Server, error) {
 	reflection.Register(s)
 	pb.RegisterImagesServiceServer(s, &server{uc: uc})
 
-	log.Println("starting images service on port", port)
+	log.Println("starting grpc server on port", port)
 
 	if err := s.Serve(listener); err != nil {
 		return nil, err
@@ -41,16 +41,18 @@ func New(uc usecases, port string) (*grpc.Server, error) {
 	return s, err
 }
 
-func (s server) GetRandomTaksa(ctx context.Context, request *pb.GetRandomTaksaRequest) (*pb.GetRandomTaksaResponse, error) {
-	log.Println("Random taksa called")
+func (s server) GetRandomImg(ctx context.Context, req *pb.GetRandomImgRequest) (*pb.GetRandomImgResponse, error) {
+	log.Println("Random img called")
 
-	url, err := s.uc.RandomTaksa(ctx)
+	query := req.Query
+
+	url, err := s.uc.RandomImg(ctx, query)
 
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println("Taksa fetched successfully")
+	log.Println("Random img fetched successfully")
 
-	return &pb.GetRandomTaksaResponse{Url: url}, nil
+	return &pb.GetRandomImgResponse{Url: url}, nil
 }
